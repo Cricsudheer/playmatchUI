@@ -7,7 +7,7 @@ import { classifyAward } from '../utils/awardUtils';
  * Awards Page Component
  * Displays all awards with filtering capabilities
  */
-export function AwardsPage({ onNavigateHome }) {
+export function AwardsPage() {
   const [highlightFilter, setHighlightFilter] = useState(AWARD_FILTERS.ALL);
 
   const filteredAwards =
@@ -62,10 +62,6 @@ export function AwardsPage({ onNavigateHome }) {
             </select>
           </div>
         </div>
-
-        <button className="back-button" onClick={onNavigateHome} title="Back to dashboard">
-          ← Back to Dashboard
-        </button>
       </header>
 
       <main>

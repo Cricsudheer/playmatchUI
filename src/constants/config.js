@@ -126,6 +126,16 @@ export const AWARDS_DATA = [
       { name: 'Sujith Shetty', runs: 498, innings: 18, average: 31.0 },
     ],
   },
+  {
+    title: 'Unsung Hero',
+    description:
+      'Recognizes the player who may not always receive spotlight but continually contributes selflessly for the team\'s success.',
+    nominees: [
+      { name: 'Ayush', runs: 205, innings: 20 },
+      { name: 'Paras Jain', runs: 326, innings: 16 },
+      { name: 'Kapil Raghuwanshi', wickets: 18, economy: 5.93 },
+    ],
+  },
 ];
 
 /**
