@@ -1,0 +1,681 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SIGMA Cricket – Season Awards</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #050816;
+      --bg-soft: #0b1020;
+      --card-bg: #0f172a;
+      --border-subtle: rgba(148, 163, 184, 0.22);
+      --accent: #fbbf24;
+      --accent-soft: rgba(251, 191, 36, 0.12);
+      --accent-2: #a855f7;
+      --text-primary: #e5e7eb;
+      --text-muted: #9ca3af;
+      --text-soft: #6b7280;
+      --radius-lg: 18px;
+      --radius-pill: 999px;
+      --shadow-soft: 0 22px 60px rgba(15, 23, 42, 0.75);
+      --transition-fast: 0.18s ease-out;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
+      background: radial-gradient(circle at top, #1e293b 0, var(--bg) 40%);
+      color: var(--text-primary);
+    }
+
+    .page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 18px 14px 32px;
+    }
+
+    @media (min-width: 768px) {
+      .page {
+        padding: 26px 20px 40px;
+      }
+    }
+
+    header {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .header-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.6rem;
+      letter-spacing: -0.03em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    @media (min-width: 768px) {
+      h1 {
+        font-size: 1.9rem;
+      }
+    }
+
+    .badge {
+      padding: 3px 9px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-soft);
+      background: radial-gradient(circle at top left, rgba(148, 163, 184, 0.35), transparent 50%);
+    }
+
+    .subtitle {
+      margin: 0;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      max-width: 620px;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-size: 0.78rem;
+      color: var(--text-soft);
+    }
+
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 11px;
+      border-radius: var(--radius-pill);
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: var(--radius-pill);
+      background: var(--accent);
+      box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.22);
+    }
+
+    .pill-label {
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.6rem;
+      color: var(--text-soft);
+    }
+
+    .pill-value {
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    /* Filters row */
+    .filters-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+      margin-top: 2px;
+    }
+
+    .filters-left {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .pill-small {
+      font-size: 0.7rem;
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      color: var(--text-soft);
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    .filters-right {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    select {
+      appearance: none;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text-muted);
+      padding: 5px 12px;
+      font-size: 0.76rem;
+      cursor: pointer;
+      outline: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    select:focus-visible {
+      border-color: rgba(251, 191, 36, 0.7);
+    }
+
+    /* Awards grid */
+    .awards-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 14px;
+    }
+
+    @media (min-width: 700px) {
+      .awards-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 1100px) {
+      .awards-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    .award-card {
+      position: relative;
+      border-radius: var(--radius-lg);
+      padding: 14px 13px 12px;
+      background:
+        radial-gradient(circle at top left, rgba(250, 204, 21, 0.16), transparent 55%),
+        radial-gradient(circle at bottom right, rgba(168, 85, 247, 0.15), transparent 60%),
+        var(--card-bg);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      box-shadow: var(--shadow-soft);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      overflow: hidden;
+      transition:
+        transform var(--transition-fast),
+        box-shadow var(--transition-fast),
+        border-color var(--transition-fast),
+        background var(--transition-fast);
+    }
+
+    .award-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(251, 191, 36, 0.08), transparent 60%);
+      opacity: 0;
+      transition: opacity var(--transition-fast);
+      pointer-events: none;
+    }
+
+    .award-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 26px 70px rgba(15, 23, 42, 0.95);
+      border-color: rgba(251, 191, 36, 0.6);
+    }
+
+    .award-card:hover::after {
+      opacity: 1;
+    }
+
+    .award-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .award-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: #fefce8;
+    }
+
+    .award-tag {
+      font-size: 0.7rem;
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(251, 191, 36, 0.65);
+      background: rgba(15, 23, 42, 0.9);
+      color: #fef9c3;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      white-space: nowrap;
+    }
+
+    .award-description {
+      font-size: 0.78rem;
+      color: var(--text-soft);
+      line-height: 1.5;
+      margin-bottom: 4px;
+    }
+
+    .nominee-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-soft);
+      margin-bottom: 4px;
+    }
+
+    .nominee-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+
+    .nominee {
+      position: relative;
+      border-radius: 12px;
+      padding: 7px 8px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.78rem;
+      overflow: hidden;
+    }
+
+    .nominee.main {
+      border-color: rgba(251, 191, 36, 0.7);
+      background:
+        radial-gradient(circle at left, rgba(251, 191, 36, 0.14), transparent 55%),
+        rgba(15, 23, 42, 0.95);
+    }
+
+    .nominee-main {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .nominee-name-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nominee-name {
+      font-weight: 500;
+    }
+
+    .nominee-chip {
+      font-size: 0.65rem;
+      padding: 2px 7px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      color: var(--text-soft);
+      background: rgba(15, 23, 42, 0.9);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .nominee.stats {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .stat-pill {
+      padding: 2px 7px;
+      border-radius: var(--radius-pill);
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(51, 65, 85, 0.9);
+    }
+
+    .stat-pill strong {
+      color: var(--text-primary);
+    }
+
+    .nominee-rank {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: rgba(251, 191, 36, 0.95);
+      letter-spacing: -0.03em;
+    }
+
+    .nominee-rank-label {
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--text-soft);
+      text-align: right;
+    }
+
+    .award-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-top: 4px;
+      border-top: 1px dashed rgba(148, 163, 184, 0.4);
+      padding-top: 5px;
+      font-size: 0.7rem;
+      color: var(--text-soft);
+    }
+
+    .award-footer span.highlight {
+      color: #fef3c7;
+    }
+
+    .mini-chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .mini-chip {
+      font-size: 0.65rem;
+      padding: 2px 7px;
+      border-radius: var(--radius-pill);
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.38);
+      color: var(--text-muted);
+    }
+
+    .mini-chip.accent {
+      border-color: rgba(251, 191, 36, 0.75);
+      color: #fef9c3;
+      background: rgba(251, 191, 36, 0.14);
+    }
+
+    footer.page-footer {
+      margin-top: 24px;
+      font-size: 0.72rem;
+      color: var(--text-soft);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 6px;
+      border-top: 1px solid rgba(15, 23, 42, 0.9);
+      padding-top: 10px;
+    }
+
+    footer.page-footer span {
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="header-row">
+        <div class="title-block">
+          <h1>
+            SIGMA Cricket – Season Awards
+            <span class="badge">2024–25 Squad</span>
+          </h1>
+          <p class="subtitle">
+            Non-stat awards that capture impact, temperament and stories beyond just averages.
+            Curated from internal SIGMA performance data.
+          </p>
+        </div>
+        <div class="meta-row">
+          <div class="meta-pill">
+            <span class="dot"></span>
+            <div>
+              <div class="pill-label">Mode</div>
+              <div class="pill-value">Awards Night View</div>
+            </div>
+          </div>
+          <div class="meta-pill">
+            <div>
+              <div class="pill-label">Total Awards</div>
+              <div class="pill-value" id="award-count">–</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="filters-row">
+        <div class="filters-left">
+          <span class="pill-small">SIGMA Internal Awards • Captains Insight Tool</span>
+        </div>
+        <div class="filters-right">
+          <select id="highlight-filter">
+            <option value="all">View: All awards</option>
+            <option value="batting">Highlight: Batting heavy</option>
+            <option value="bowling">Highlight: Bowling heavy</option>
+            <option value="allrounder">Highlight: All-round profiles</option>
+          </select>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="awards-grid" id="awards-grid">
+        <!-- cards injected by JS -->
+      </section>
+    </main>
+
+    <footer class="page-footer">
+      <span>Designed as part of the SIGMA dashboard – use alongside stats view for selection calls.</span>
+      <span>Tip: Screenshot individual cards for Instagram stories or team announcements.</span>
+    </footer>
+  </div>
+
+  <script>
+    const awardsData = [
+      {
+        "title": "Emerging Player of the Year",
+        "description": "Awarded to a player who has shown strong development, confidence and rising influence across matches — signaling a bright future ahead.",
+        "nominees": [
+          { "name": "Vicky", "runs": 110, "innings": 6, "average": 18.00 },
+          { "name": "Avinash", "runs": 129, "innings": 6, "average": 25.00 },
+          { "name": "Rahat", "wickets": 12, "innings": 6, "economy": 5.81 }
+        ]
+      },
+      {
+        "title": "Breakthrough Machines",
+        "description": "Recognizes bowlers who consistently provide crucial breakthroughs, breaking partnerships and shifting momentum back to the team.",
+        "nominees": [
+          { "name": "Braj", "wickets": 37, "innings": 20, "economy": 6.33 },
+          { "name": "Sudheer", "wickets": 45, "innings": 28, "economy": 6.07 },
+          { "name": "ROHIT", "wickets": 15, "innings": 13, "economy": 5.91 }
+        ]
+      },
+      {
+        "title": "Death Overs Doctor",
+        "description": "Awarded to the bowler who performs with control, discipline and composure in the final overs, minimizing damage under intense pressure.",
+        "nominees": [
+          { "name": "ROHIT", "wickets": 15, "economy": 5.91 },
+          { "name": "Rahat", "wickets": 12, "economy": 5.81 },
+          { "name": "Kapil Raghuwanshi", "wickets": 18, "economy": 5.93 }
+        ]
+      },
+      {
+        "title": "Impact All-Rounder",
+        "description": "Recognizes a player who adds value in multiple departments, contributing significantly with both bat and ball.",
+        "nominees": [
+          { "name": "Sumit", "runs": 244, "wickets": 17, "innings_batting": 16, "innings_bowling": 17 },
+          { "name": "ANSHUL", "runs": 118, "wickets": 12, "innings_batting": 8, "innings_bowling": 10 },
+          { "name": "Braj", "runs": 102, "wickets": 37, "innings_batting": 12, "innings_bowling": 20 }
+        ]
+      },
+      {
+        "title": "Mr. Reliability",
+        "description": "Awarded to the player who provides stability and consistency, repeatedly delivering dependable performances for the team.",
+        "nominees": [
+          { "name": "Rana", "runs": 270, "innings": 7, "average": 45.00 },
+          { "name": "Pavan", "runs": 422, "innings": 12, "average": 35.00 },
+          { "name": "Sujith Shetty", "runs": 498, "innings": 18, "average": 31.00 }
+        ]
+      }
+    ];
+
+    const awardsGrid = document.getElementById('awards-grid');
+    const awardCountEl = document.getElementById('award-count');
+    const highlightFilter = document.getElementById('highlight-filter');
+
+    function classifyAward(award) {
+      const t = award.title.toLowerCase();
+      if (t.includes('all-round')) return 'allrounder';
+      if (t.includes('breakthrough') || t.includes('death') || t.includes('bowler')) return 'bowling';
+      if (t.includes('reliability') || t.includes('emerging')) return 'batting';
+      return 'all';
+    }
+
+    function buildStatPills(n) {
+      const pills = [];
+
+      if (n.runs != null) {
+        pills.push(`<span class="stat-pill"><strong>${n.runs}</strong> runs</span>`);
+      }
+      if (n.average != null) {
+        pills.push(`<span class="stat-pill">Avg <strong>${n.average.toFixed(2)}</strong></span>`);
+      }
+      if (n.innings != null) {
+        pills.push(`<span class="stat-pill"><strong>${n.innings}</strong> inns</span>`);
+      }
+      if (n.wickets != null) {
+        pills.push(`<span class="stat-pill"><strong>${n.wickets}</strong> wkts</span>`);
+      }
+      if (n.economy != null) {
+        pills.push(`<span class="stat-pill">Eco <strong>${n.economy.toFixed(2)}</strong></span>`);
+      }
+      if (n.innings_batting != null) {
+        pills.push(`<span class="stat-pill">Bat inns <strong>${n.innings_batting}</strong></span>`);
+      }
+      if (n.innings_bowling != null) {
+        pills.push(`<span class="stat-pill">Bowl inns <strong>${n.innings_bowling}</strong></span>`);
+      }
+
+      return pills.join('');
+    }
+
+    function buildPrimaryTag(award) {
+      const cat = classifyAward(award);
+      if (cat === 'batting') return 'Batting-leaning';
+      if (cat === 'bowling') return 'Bowling-leaning';
+      if (cat === 'allrounder') return 'All-round value';
+      return 'Team culture';
+    }
+
+    function renderAwards(filter = 'all') {
+      awardsGrid.innerHTML = '';
+
+      const filtered = awardsData.filter(a => {
+        if (filter === 'all') return true;
+        return classifyAward(a) === filter;
+      });
+
+      filtered.forEach((award, idx) => {
+        const tag = buildPrimaryTag(award);
+
+        const nomineesHtml = award.nominees.map((n, i) => {
+          const isMain = i === 0;
+          const rank = i === 0 ? '🏆' : i === 1 ? '⭐' : '🎯';
+          const rankLabel =
+            i === 0 ? 'Front-runner' :
+            i === 1 ? 'Strong contender' :
+            'Shortlist';
+
+          return `
+            <div class="nominee ${isMain ? 'main' : ''}">
+              <div class="nominee-main">
+                <div class="nominee-name-row">
+                  <div class="nominee-name">${n.name}</div>
+                  ${isMain ? '<span class="nominee-chip">Likely Winner</span>' : ''}
+                </div>
+                <div class="nominee stats">
+                  ${buildStatPills(n)}
+                </div>
+              </div>
+              <div style="text-align:right;">
+                <div class="nominee-rank">${rank}</div>
+                <div class="nominee-rank-label">${rankLabel}</div>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        const chips = [];
+        const cat = classifyAward(award);
+        if (cat === 'batting') chips.push('Top-order mindset');
+        if (cat === 'bowling') chips.push('Phase control');
+        if (cat === 'allrounder') chips.push('Balance in XI');
+        chips.push(`Nominees: ${award.nominees.length}`);
+
+        const chipsHtml = chips.map(c =>
+          `<span class="mini-chip${c.includes('Nominees') ? '' : ' accent'}">${c}</span>`
+        ).join('');
+
+        const cardHtml = `
+          <article class="award-card" data-category="${cat}">
+            <div class="award-header">
+              <div>
+                <div class="award-title">${award.title}</div>
+              </div>
+              <div class="award-tag">${tag}</div>
+            </div>
+            <div class="award-description">${award.description}</div>
+            <div class="nominee-label">Shortlisted players</div>
+            <div class="nominee-list">
+              ${nomineesHtml}
+            </div>
+            <div class="award-footer">
+              <span>Use this award as a <span class="highlight">conversation starter</span> in team meetings, not just a trophy.</span>
+              <div class="mini-chip-row">
+                ${chipsHtml}
+              </div>
+            </div>
+          </article>
+        `;
+
+        awardsGrid.insertAdjacentHTML('beforeend', cardHtml);
+      });
+
+      awardCountEl.textContent = `${filtered.length} awards`;
+    }
+
+    highlightFilter.addEventListener('change', (e) => {
+      renderAwards(e.target.value);
+    });
+
+    renderAwards('all');
+  </script>
+</body>
+</html>

@@ -71,3 +71,69 @@ export const MIN_INNINGS_FOR_AVG = 7;
  * Dismissal Rate Threshold for WK-Batsman Classification
  */
 export const DISMISS_RATE_WK_THRESHOLD = 0.5;
+
+/**
+ * Awards Data
+ */
+export const AWARDS_DATA = [
+  {
+    title: 'Emerging Player of the Year',
+    description:
+      'Awarded to a player who has shown strong development, confidence and rising influence across matches — signaling a bright future ahead.',
+    nominees: [
+      { name: 'Vicky', runs: 110, innings: 6, average: 18.0 },
+      { name: 'Avinash', runs: 129, innings: 6, average: 25.0 },
+      { name: 'Rahat', wickets: 12, innings: 6, economy: 5.81 },
+    ],
+  },
+  {
+    title: 'Breakthrough Machines',
+    description:
+      'Recognizes bowlers who consistently provide crucial breakthroughs, breaking partnerships and shifting momentum back to the team.',
+    nominees: [
+      { name: 'Braj', wickets: 37, innings: 20, economy: 6.33 },
+      { name: 'Sudheer', wickets: 45, innings: 28, economy: 6.07 },
+      { name: 'ROHIT', wickets: 15, innings: 13, economy: 5.91 },
+    ],
+  },
+  {
+    title: 'Death Overs Doctor',
+    description:
+      'Awarded to the bowler who performs with control, discipline and composure in the final overs, minimizing damage under intense pressure.',
+    nominees: [
+      { name: 'ROHIT', wickets: 15, economy: 5.91 },
+      { name: 'Rahat', wickets: 12, economy: 5.81 },
+      { name: 'Kapil Raghuwanshi', wickets: 18, economy: 5.93 },
+    ],
+  },
+  {
+    title: 'Impact All-Rounder',
+    description:
+      'Recognizes a player who adds value in multiple departments, contributing significantly with both bat and ball.',
+    nominees: [
+      { name: 'Sumit', runs: 244, wickets: 17, innings_batting: 16, innings_bowling: 17 },
+      { name: 'ANSHUL', runs: 118, wickets: 12, innings_batting: 8, innings_bowling: 10 },
+      { name: 'Braj', runs: 102, wickets: 37, innings_batting: 12, innings_bowling: 20 },
+    ],
+  },
+  {
+    title: 'Mr. Reliability',
+    description:
+      'Awarded to the player who provides stability and consistency, repeatedly delivering dependable performances for the team.',
+    nominees: [
+      { name: 'Rana', runs: 270, innings: 7, average: 45.0 },
+      { name: 'Pavan', runs: 422, innings: 12, average: 35.0 },
+      { name: 'Sujith Shetty', runs: 498, innings: 18, average: 31.0 },
+    ],
+  },
+];
+
+/**
+ * Award Filter Categories
+ */
+export const AWARD_FILTERS = {
+  ALL: 'all',
+  BATTING: 'batting',
+  BOWLING: 'bowling',
+  ALLROUNDER: 'allrounder',
+};
