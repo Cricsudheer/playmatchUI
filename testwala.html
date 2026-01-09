@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PlayMatch — Login / Sign Up</title>
+
+<style>
+  :root {
+    --bg: #0a0f1c;
+    --card: #0f172a;
+    --border: #1f2937;
+    --text: #e5e7eb;
+    --muted: #9ca3af;
+    --accent: #facc15;
+    --radius: 14px;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Inter, system-ui, -apple-system, sans-serif;
+  }
+
+  .shell {
+    width: 100%;
+    max-width: 420px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px 22px 20px;
+    background: var(--card);
+  }
+
+  .brand {
+    text-align: center;
+    margin-bottom: 18px;
+  }
+
+  .brand h1 {
+    margin: 0 0 6px;
+    font-size: 1.3rem;
+    letter-spacing: -0.03em;
+  }
+
+  .brand p {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+
+  .tabs {
+    display: flex;
+    background: #020617;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 3px;
+    margin: 14px 0 10px;
+  }
+
+  .tab {
+    flex: 1;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    padding: 6px 0;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 0.75rem;
+  }
+
+  .tab.active {
+    background: #111827;
+    color: #fefce8;
+  }
+
+  form { display: none; }
+
+  form.active { display: block; }
+
+  .field {
+    margin-bottom: 10px;
+  }
+
+  label {
+    font-size: 0.75rem;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  input, select {
+    width: 100%;
+    padding: 9px 10px;
+    border-radius: 10px;
+    border: 1px solid #1f2937;
+    background: #020617;
+    color: var(--text);
+    font-size: 0.8rem;
+    outline: none;
+  }
+
+  input:focus, select:focus {
+    border-color: var(--accent);
+  }
+
+  button.primary {
+    width: 100%;
+    padding: 9px;
+    border-radius: 10px;
+    border: none;
+    margin-top: 4px;
+    background: var(--accent);
+    color: #111;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .hint {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+
+  .hint span {
+    color: var(--accent);
+    cursor: pointer;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="shell">
+
+  <div class="brand">
+    <h1>PlayMatch</h1>
+    <p>Login or create your account</p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-mode="login">Login</button>
+    <button class="tab" data-mode="signup">Sign up</button>
+  </div>
+
+  <!-- LOGIN -->
+  <form id="login" class="active">
+    <div class="field">
+      <label>Email</label>
+      <input type="email" placeholder="you@example.com" />
+    </div>
+
+    <div class="field">
+      <label>Password</label>
+      <input type="password" placeholder="••••••••" />
+    </div>
+
+    <button class="primary" type="submit">Login</button>
+
+    <p class="hint">
+      New here? <span data-switch="signup">Create account</span>
+    </p>
+  </form>
+
+  <!-- SIGNUP -->
+  <form id="signup">
+    <div class="field">
+      <label>Full name</label>
+      <input type="text" placeholder="John Doe" />
+    </div>
+
+    <div class="field">
+      <label>Gender</label>
+      <select>
+        <option value="">Select</option>
+        <option>male</option>
+        <option>female</option>
+        <option>other</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Email</label>
+      <input type="email" placeholder="you@example.com" />
+    </div>
+
+    <div class="field">
+      <label>Password</label>
+      <input type="password" placeholder="Create password" />
+    </div>
+
+    <div class="field">
+      <label>Re-enter password</label>
+      <input type="password" placeholder="Repeat password" />
+    </div>
+
+    <button class="primary" type="submit">Create account</button>
+
+    <p class="hint">
+      Already registered? <span data-switch="login">Login</span>
+    </p>
+  </form>
+
+</div>
+
+<script>
+  const tabs = document.querySelectorAll(".tab");
+  const forms = {
+    login: document.getElementById("login"),
+    signup: document.getElementById("signup"),
+  };
+  const switches = document.querySelectorAll("[data-switch]");
+
+  function setMode(m) {
+    tabs.forEach(t => t.classList.toggle("active", t.dataset.mode === m));
+    Object.entries(forms).forEach(([k, f]) =>
+      f.classList.toggle("active", k === m)
+    );
+  }
+
+  tabs.forEach(t => t.addEventListener("click", () => setMode(t.dataset.mode)));
+  switches.forEach(s =>
+    s.addEventListener("click", () => setMode(s.dataset.switch))
+  );
+</script>
+
+</body>
+</html>
