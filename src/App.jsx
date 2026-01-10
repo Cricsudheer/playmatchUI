@@ -7,6 +7,7 @@ import { LoginPage } from './pages/LoginPage';
 import { SignupPage } from './pages/SignupPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { AuthProvider, useAuth } from './hooks/useAuth.jsx';
+import { Toaster } from 'sonner';
 import './styles/main.css';
 
 /**
@@ -93,6 +94,7 @@ export default function App() {
   return (
     <AuthProvider>
       <Router>
+        <Toaster position="top-right" richColors />
         <AppContent />
       </Router>
     </AuthProvider>
