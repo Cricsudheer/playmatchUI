@@ -3,16 +3,21 @@ import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from
 import Navigation from './components/Navigation';
 import { DashboardPage } from './pages/DashboardPage';
 import { AwardsPage } from './pages/AwardsPage';
+import { LoginPage } from './pages/LoginPage';
+import { SignupPage } from './pages/SignupPage';
+import { ProtectedRoute } from './components/ProtectedRoute';
+import { AuthProvider, useAuth } from './hooks/useAuth.jsx';
 import './styles/main.css';
 
 /**
- * Main App Component
- * Handles routing between Dashboard and Awards pages with URL-based navigation
+ * Main App Content with Protected Routes
+ * Handles routing between Dashboard and Awards pages with authentication
  */
 function AppContent() {
   const navigate = useNavigate();
   const location = useLocation();
   const [currentPage, setCurrentPage] = useState('dashboard');
+  const { user, logout } = useAuth();
 
   // Update current page based on URL
   useEffect(() => {
@@ -34,26 +39,63 @@ function AppContent() {
     window.scrollTo(0, 0);
   };
 
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
   return (
-    <>
-      <Navigation
-        currentPage={currentPage}
-        onNavigateDashboard={handleNavigateHome}
-        onNavigateAwards={handleNavigateToAwards}
+    <Routes>
+      {/* Public Routes */}
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/signup" element={<SignupPage />} />
+
+      {/* Protected Routes */}
+      <Route
+        path="/"
+        element={
+          <ProtectedRoute>
+            <>
+              <Navigation
+                currentPage={currentPage}
+                onNavigateDashboard={handleNavigateHome}
+                onNavigateAwards={handleNavigateToAwards}
+                user={user}
+                onLogout={handleLogout}
+              />
+              <DashboardPage onNavigateToAwards={handleNavigateToAwards} />
+            </>
+          </ProtectedRoute>
+        }
       />
-      <Routes>
-        <Route path="/" element={<DashboardPage onNavigateToAwards={handleNavigateToAwards} />} />
-        <Route path="/awards" element={<AwardsPage />} />
-      </Routes>
-    </>
+      <Route
+        path="/awards"
+        element={
+          <ProtectedRoute>
+            <>
+              <Navigation
+                currentPage={currentPage}
+                onNavigateDashboard={handleNavigateHome}
+                onNavigateAwards={handleNavigateToAwards}
+                user={user}
+                onLogout={handleLogout}
+              />
+              <AwardsPage />
+            </>
+          </ProtectedRoute>
+        }
+      />
+    </Routes>
   );
 }
 
 export default function App() {
   return (
-    <Router>
-      <AppContent />
-    </Router>
+    <AuthProvider>
+      <Router>
+        <AppContent />
+      </Router>
+    </AuthProvider>
   );
 }
 

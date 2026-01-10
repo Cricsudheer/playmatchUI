@@ -3,6 +3,7 @@
  */
 export const API_CONFIG = {
   BASE_URL: import.meta.env.VITE_API_BASE_URL || 'https://playmatch-preprod.onrender.com',
+  AUTH_BASE_URL: import.meta.env.VITE_AUTH_BASE_URL || 'http://localhost:8080',
   ENDPOINTS: {
     STATS: '/sigma/api/players/all/stats',
   },
