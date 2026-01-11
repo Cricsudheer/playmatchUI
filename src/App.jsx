@@ -5,6 +5,7 @@ import { DashboardPage } from './pages/DashboardPage';
 import { AwardsPage } from './pages/AwardsPage';
 import { LoginPage } from './pages/LoginPage';
 import { SignupPage } from './pages/SignupPage';
+import { PlayerProfilePage } from './pages/PlayerProfilePage';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { AuthProvider, useAuth } from './hooks/useAuth.jsx';
 import { Toaster } from 'sonner';
@@ -40,6 +41,11 @@ function AppContent() {
     window.scrollTo(0, 0);
   };
 
+  const handleNavigateToProfile = () => {
+    navigate('/profile');
+    window.scrollTo(0, 0);
+  };
+
   const handleLogout = () => {
     logout();
     navigate('/login');
@@ -61,6 +67,7 @@ function AppContent() {
                 currentPage={currentPage}
                 onNavigateDashboard={handleNavigateHome}
                 onNavigateAwards={handleNavigateToAwards}
+                onNavigateProfile={handleNavigateToProfile}
                 user={user}
                 onLogout={handleLogout}
               />
@@ -78,11 +85,20 @@ function AppContent() {
                 currentPage={currentPage}
                 onNavigateDashboard={handleNavigateHome}
                 onNavigateAwards={handleNavigateToAwards}
+                onNavigateProfile={handleNavigateToProfile}
                 user={user}
                 onLogout={handleLogout}
               />
               <AwardsPage />
             </>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute>
+            <PlayerProfilePage />
           </ProtectedRoute>
         }
       />

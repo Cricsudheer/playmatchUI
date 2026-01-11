@@ -127,9 +127,9 @@ export function SignupPage() {
         reEnterPassword: formData.reEnterPassword,
       });
 
-      console.log('[SignupPage] Registration successful, navigating to dashboard');
-      // Auto-login happens in the register service, navigate to dashboard
-      navigate('/', { replace: true });
+      console.log('[SignupPage] Registration successful, navigating to profile creation');
+      // Auto-login happens in the register service, navigate to profile creation
+      navigate('/profile', { replace: true, state: { fromSignup: true } });
     } catch (error) {
       console.error('[SignupPage] Registration failed:', error.message);
       setFormError(error.message);
