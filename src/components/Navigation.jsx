@@ -1,8 +1,9 @@
 /**
  * Main navigation bar component
  * Provides persistent navigation between Dashboard and Awards pages
+ * Displays user info and logout button when authenticated
  */
-export default function Navigation({ currentPage, onNavigateDashboard, onNavigateAwards }) {
+export default function Navigation({ currentPage, onNavigateDashboard, onNavigateAwards, onNavigateProfile, user, onLogout }) {
   return (
     <nav className="navbar">
       <div className="navbar-container">
@@ -30,6 +31,19 @@ export default function Navigation({ currentPage, onNavigateDashboard, onNavigat
             </button>
           </li>
         </ul>
+
+        {/* User Info and Logout */}
+        {user && (
+          <div className="nav-user">
+            <span className="nav-user-name">{user.name}</span>
+            <button className="nav-profile-button" onClick={onNavigateProfile}>
+              Profile
+            </button>
+            <button className="logout-button" onClick={onLogout}>
+              Logout
+            </button>
+          </div>
+        )}
       </div>
     </nav>
   );
