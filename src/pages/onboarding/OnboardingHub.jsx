@@ -40,7 +40,7 @@ function OnboardingHub() {
     <div className="onboarding-container">
       <div className="onboarding-content">
         <div className="onboarding-header">
-          <h1 className="onboarding-title">Welcome to PlayMatch!</h1>
+          <h1 className="onboarding-title">Welcome to GameTeam!</h1>
           <p className="onboarding-subtitle">
             Get started by creating or joining a team
           </p>

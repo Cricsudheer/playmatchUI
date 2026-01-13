@@ -9,7 +9,7 @@ export default function Navigation({ currentPage, onNavigateDashboard, onNavigat
       <div className="navbar-container">
         {/* Logo/Brand */}
         <div className="navbar-brand">
-          <h1>PlayMatch</h1>
+          <h1>GameTeam</h1>
         </div>
 
         {/* Navigation Links */}

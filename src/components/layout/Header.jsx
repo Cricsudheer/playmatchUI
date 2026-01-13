@@ -22,7 +22,7 @@ export const Header = () => {
               </div>
             ) : (
               <div className="app-header-title-wrapper">
-                <h1 className="app-header-title">PlayMatch</h1>
+                <h1 className="app-header-title">GameTeam</h1>
               </div>
             )}
           </div>

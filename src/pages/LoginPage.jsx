@@ -4,6 +4,7 @@ import { useAuth } from '../hooks/useAuth.jsx';
 import { FormInput } from '../components/FormInput';
 import { FormButton } from '../components/FormButton';
 import { validateEmail, validatePassword } from '../utils/validationUtils';
+import '../styles/auth.css';
 
 export function LoginPage() {
   const { login } = useAuth();

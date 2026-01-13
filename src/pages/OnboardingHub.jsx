@@ -221,14 +221,21 @@ function OnboardingHub() {
     <div className="onboarding-container">
       <div className="onboarding-content">
         <div className="onboarding-header">
-          <h1 className="onboarding-title">Welcome to PlayMatch!</h1>
+          <h1 className="onboarding-title">Welcome to GameTeam!</h1>
           <p className="onboarding-subtitle">Get started by joining or creating a team</p>
         </div>
 
         <div className="onboarding-grid">
           {/* Section 1: Join with invite */}
           <div className="onboarding-section">
-            <div className="onboarding-section-icon">🤝</div>
+            <div className="onboarding-section-icon">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+            </div>
             <h3 className="onboarding-section-title">Join with Invite</h3>
             <p className="onboarding-section-description">Have an invite code from a team admin?</p>
             <button className="onboarding-section-button" onClick={() => setShowJoinForm(true)}>
@@ -238,7 +245,12 @@ function OnboardingHub() {
 
           {/* Section 2: Find team */}
           <div className="onboarding-section">
-            <div className="onboarding-section-icon">🔍</div>
+            <div className="onboarding-section-icon">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.35-4.35"></path>
+              </svg>
+            </div>
             <h3 className="onboarding-section-title">Find a Team</h3>
             <p className="onboarding-section-description">Browse and search for teams near you</p>
             <button className="onboarding-section-button" onClick={() => toast.info('Coming soon!')}>
@@ -248,7 +260,14 @@ function OnboardingHub() {
 
           {/* Section 3: Create team */}
           <div className="onboarding-section onboarding-section-featured">
-            <div className="onboarding-section-icon">🏏</div>
+            <div className="onboarding-section-icon">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <line x1="19" y1="8" x2="19" y2="14"></line>
+                <line x1="22" y1="11" x2="16" y2="11"></line>
+              </svg>
+            </div>
             <h3 className="onboarding-section-title">Create Your Team</h3>
             <p className="onboarding-section-description">Start your own team and invite members</p>
             <button className="onboarding-section-button" onClick={() => setShowCreateForm(true)}>
@@ -258,7 +277,12 @@ function OnboardingHub() {
 
           {/* Section 4: Pending requests */}
           <div className="onboarding-section">
-            <div className="onboarding-section-icon">⏳</div>
+            <div className="onboarding-section-icon">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+            </div>
             <h3 className="onboarding-section-title">Pending Requests</h3>
             <p className="onboarding-section-description">View your pending join requests</p>
             <button className="onboarding-section-button" onClick={() => toast.info('No pending requests')}>

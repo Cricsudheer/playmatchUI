@@ -11,6 +11,7 @@ import {
   validateGender,
   validatePasswordMatch,
 } from '../utils/validationUtils';
+import '../styles/auth.css';
 
 export function SignupPage() {
   const navigate = useNavigate();
