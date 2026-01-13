@@ -11,6 +11,7 @@ import { EventsPage } from './pages/app/EventsPage';
 import { ProfilePage } from './pages/app/ProfilePage';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { AuthProvider, useAuth } from './hooks/useAuth.jsx';
+import { TeamProvider } from './contexts/TeamContext';
 import { Toaster } from 'sonner';
 import './styles/main.css';
 import './styles/app.css';
@@ -79,10 +80,12 @@ function AppContent() {
 export default function App() {
   return (
     <AuthProvider>
-      <Router>
-        <Toaster position="top-right" richColors />
-        <AppContent />
-      </Router>
+      <TeamProvider>
+        <Router>
+          <Toaster position="top-right" richColors />
+          <AppContent />
+        </Router>
+      </TeamProvider>
     </AuthProvider>
   );
 }
