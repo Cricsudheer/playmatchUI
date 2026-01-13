@@ -1,99 +1,69 @@
-import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
-import Navigation from './components/Navigation';
-import { DashboardPage } from './pages/DashboardPage';
-import { AwardsPage } from './pages/AwardsPage';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { LoginPage } from './pages/LoginPage';
 import { SignupPage } from './pages/SignupPage';
 import { PlayerProfilePage } from './pages/PlayerProfilePage';
+import { AppShell } from './components/layout/AppShell';
+import { HomePage } from './pages/app/HomePage';
+import { StatsPage } from './pages/app/StatsPage';
+import { TeamsPage } from './pages/app/TeamsPage';
+import { EventsPage } from './pages/app/EventsPage';
+import { ProfilePage } from './pages/app/ProfilePage';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { AuthProvider, useAuth } from './hooks/useAuth.jsx';
 import { Toaster } from 'sonner';
 import './styles/main.css';
+import './styles/app.css';
+
+/**
+ * Login Redirect Component
+ * Redirects authenticated users to app home, otherwise shows login
+ */
+function LoginRedirect() {
+  const { isAuthenticated } = useAuth();
+  return isAuthenticated ? <Navigate to="/app/home" replace /> : <LoginPage />;
+}
+
+/**
+ * Signup Redirect Component
+ * Redirects authenticated users to app home, otherwise shows signup
+ */
+function SignupRedirect() {
+  const { isAuthenticated } = useAuth();
+  return isAuthenticated ? <Navigate to="/app/home" replace /> : <SignupPage />;
+}
 
 /**
  * Main App Content with Protected Routes
- * Handles routing between Dashboard and Awards pages with authentication
+ * New routing structure with AppShell layout
  */
 function AppContent() {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [currentPage, setCurrentPage] = useState('dashboard');
-  const { user, logout } = useAuth();
-
-  // Update current page based on URL
-  useEffect(() => {
-    const path = location.pathname;
-    if (path.includes('/awards')) {
-      setCurrentPage('awards');
-    } else {
-      setCurrentPage('dashboard');
-    }
-  }, [location.pathname]);
-
-  const handleNavigateToAwards = () => {
-    navigate('/awards');
-    window.scrollTo(0, 0);
-  };
-
-  const handleNavigateHome = () => {
-    navigate('/');
-    window.scrollTo(0, 0);
-  };
-
-  const handleNavigateToProfile = () => {
-    navigate('/profile');
-    window.scrollTo(0, 0);
-  };
-
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
-
   return (
     <Routes>
       {/* Public Routes */}
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/signup" element={<SignupPage />} />
+      <Route path="/login" element={<LoginRedirect />} />
+      <Route path="/signup" element={<SignupRedirect />} />
 
-      {/* Protected Routes */}
+      {/* Root redirect to app home */}
+      <Route path="/" element={<Navigate to="/app/home" replace />} />
+
+      {/* Protected App Routes with AppShell */}
       <Route
-        path="/"
+        path="/app"
         element={
           <ProtectedRoute>
-            <>
-              <Navigation
-                currentPage={currentPage}
-                onNavigateDashboard={handleNavigateHome}
-                onNavigateAwards={handleNavigateToAwards}
-                onNavigateProfile={handleNavigateToProfile}
-                user={user}
-                onLogout={handleLogout}
-              />
-              <DashboardPage onNavigateToAwards={handleNavigateToAwards} />
-            </>
+            <AppShell />
           </ProtectedRoute>
         }
-      />
-      <Route
-        path="/awards"
-        element={
-          <ProtectedRoute>
-            <>
-              <Navigation
-                currentPage={currentPage}
-                onNavigateDashboard={handleNavigateHome}
-                onNavigateAwards={handleNavigateToAwards}
-                onNavigateProfile={handleNavigateToProfile}
-                user={user}
-                onLogout={handleLogout}
-              />
-              <AwardsPage />
-            </>
-          </ProtectedRoute>
-        }
-      />
+      >
+        <Route path="home" element={<HomePage />} />
+        <Route path="stats" element={<StatsPage />} />
+        <Route path="teams" element={<TeamsPage />} />
+        <Route path="events" element={<EventsPage />} />
+        <Route path="profile" element={<ProfilePage />} />
+      </Route>
+
+      {/* Full Profile Edit Page (outside AppShell) */}
       <Route
         path="/profile"
         element={

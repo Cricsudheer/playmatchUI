@@ -1,0 +1,349 @@
+/* =================================================================
+   PLAYMATCH APP - LAYOUT STYLES
+   Mobile-first, centered design with 8px spacing system
+   Works alongside index.css (doesn't override auth/form styles)
+   ================================================================= */
+
+/* ==================== DESIGN TOKENS ==================== */
+:root {
+  /* Layout */
+  --header-height: 56px;
+  --bottom-nav-height: 64px;
+  --max-width: 1100px;
+
+  /* Spacing (8px system) */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+
+  /* These colors are already in index.css, just documenting */
+  /* --primary: #1e88e5; */
+  /* --bg: #050816; */
+  /* --card-bg: #1e293b; */
+  /* etc... */
+}
+
+/* ==================== APP SHELL LAYOUT ==================== */
+
+/* Main container for authenticated pages */
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  background: var(--bg);
+}
+
+/* ==================== HEADER ==================== */
+
+.app-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--header-height);
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border-subtle);
+  z-index: 100;
+}
+
+.app-header-container {
+  max-width: var(--max-width);
+  height: 100%;
+  margin: 0 auto;
+  padding: 0 var(--space-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.app-header-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+/* ==================== CONTENT AREA ==================== */
+
+.app-content {
+  flex: 1;
+  padding-top: var(--header-height);
+  padding-bottom: var(--bottom-nav-height);
+}
+
+.app-content-container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: var(--space-md);
+}
+
+@media (min-width: 768px) {
+  .app-content-container {
+    padding: var(--space-lg);
+  }
+}
+
+/* ==================== BOTTOM NAVIGATION ==================== */
+
+.app-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--bottom-nav-height);
+  background: var(--bg-elevated);
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 100;
+}
+
+.app-nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm);
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 64px;
+  text-decoration: none;
+}
+
+.app-nav-item:hover {
+  color: var(--text-primary);
+}
+
+.app-nav-item.active {
+  color: #1e88e5;
+}
+
+.app-nav-item.active .app-nav-icon {
+  transform: scale(1.05);
+}
+
+.app-nav-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+  transition: transform 0.2s ease;
+}
+
+.app-nav-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+/* ==================== PAGE STRUCTURE ==================== */
+
+.page-header {
+  margin-bottom: var(--space-lg);
+}
+
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 var(--space-sm) 0;
+  letter-spacing: -0.03em;
+}
+
+.page-subtitle {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+/* ==================== CARDS ==================== */
+
+.app-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+  margin-bottom: var(--space-md);
+}
+
+.app-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-md);
+}
+
+.app-card-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.app-card-content {
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.app-card-content p {
+  margin: 0 0 var(--space-sm) 0;
+}
+
+.app-card-content p:last-child {
+  margin-bottom: 0;
+}
+
+/* ==================== GRIDS ==================== */
+
+.app-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-md);
+}
+
+@media (min-width: 768px) {
+  .app-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .app-grid.grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ==================== STAT CARDS ==================== */
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-md);
+  margin-bottom: var(--space-md);
+}
+
+@media (max-width: 640px) {
+  .stat-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.stat-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e88e5;
+  margin-bottom: var(--space-xs);
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ==================== BUTTONS (App-specific) ==================== */
+
+.app-btn {
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-sm);
+  border: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.app-btn-primary {
+  background: #1e88e5;
+  color: white;
+}
+
+.app-btn-primary:hover {
+  background: #1565c0;
+}
+
+.app-btn-secondary {
+  background: var(--card-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
+}
+
+.app-btn-secondary:hover {
+  border-color: #1e88e5;
+  color: #1e88e5;
+}
+
+/* ==================== EMPTY/LOADING/ERROR STATES ==================== */
+
+.app-empty-state,
+.app-loading-state,
+.app-error-state {
+  text-align: center;
+  padding: var(--space-2xl) var(--space-md);
+  color: var(--text-muted);
+}
+
+.app-empty-icon,
+.app-loading-icon,
+.app-error-icon {
+  font-size: 3rem;
+  margin-bottom: var(--space-md);
+  opacity: 0.5;
+}
+
+.app-empty-title,
+.app-error-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--space-sm);
+}
+
+.app-empty-text,
+.app-error-text {
+  font-size: 0.875rem;
+}
+
+/* ==================== UTILITY CLASSES ==================== */
+
+.text-center {
+  text-align: center;
+}
+
+.mb-sm { margin-bottom: var(--space-sm); }
+.mb-md { margin-bottom: var(--space-md); }
+.mb-lg { margin-bottom: var(--space-lg); }
+
+.mt-sm { margin-top: var(--space-sm); }
+.mt-md { margin-top: var(--space-md); }
+.mt-lg { margin-top: var(--space-lg); }
+
+/* ==================== RESPONSIVE UTILITIES ==================== */
+
+@media (max-width: 640px) {
+  .app-header-title {
+    font-size: 1rem;
+  }
+
+  .page-title {
+    font-size: 1.25rem;
+  }
+}
