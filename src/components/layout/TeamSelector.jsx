@@ -1,12 +1,16 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useTeam } from '../../contexts/TeamContext';
 import { useNavigate } from 'react-router-dom';
+import { useMyTeams } from '../../hooks/useMyTeams';
+import { useTeamContext } from '../../contexts/TeamContext';
+import { getTeamId, findTeamById, getRoleLabel, getRoleEmoji } from '../../utils/team';
+import { ROUTES } from '../../constants/routes';
 
 export const TeamSelector = () => {
-  const { selectedTeam, teams, selectTeam, selectAllTeams } = useTeam();
+  const navigate = useNavigate();
+  const { data: myTeams, isLoading } = useMyTeams();
+  const { selectedTeamId, setSelectedTeamId } = useTeamContext();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
-  const navigate = useNavigate();
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -25,50 +29,57 @@ export const TeamSelector = () => {
     };
   }, [isOpen]);
 
-  const handleTeamSelect = (team) => {
-    selectTeam(team);
+  const handleTeamSelect = (teamId) => {
+    setSelectedTeamId(teamId);
     setIsOpen(false);
   };
 
-  const handleAllTeamsView = () => {
-    selectAllTeams();
-    setIsOpen(false);
-  };
+  // Find selected team object
+  const selectedTeam = findTeamById(myTeams, selectedTeamId);
 
-  const handleFindTeams = () => {
-    navigate('/app/teams');
-    setIsOpen(false);
-  };
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="team-selector">
+        <div className="team-selector-trigger">
+          <div className="team-selector-content">
+            <span className="team-selector-name">Loading teams...</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
-  const getRoleLabel = (role) => {
-    const labels = {
-      ADMIN: 'Admin',
-      COORDINATOR: 'Coordinator',
-      PLAYER: 'Player'
-    };
-    return labels[role] || role;
-  };
+  // Empty state - no teams
+  if (!myTeams || myTeams.length === 0) {
+    return (
+      <div className="team-selector">
+        <button
+          className="team-selector-trigger team-selector-empty"
+          onClick={() => navigate(ROUTES.ONBOARDING)}
+        >
+          <div className="team-selector-content">
+            <span className="team-selector-name">No teams • Create one</span>
+          </div>
+        </button>
+      </div>
+    );
+  }
 
-  const getTeamEmoji = (role) => {
-    const emojis = {
-      ADMIN: '👑',
-      COORDINATOR: '⭐',
-      PLAYER: '🏏'
-    };
-    return emojis[role] || '🏏';
-  };
+  // Selected team not found (e.g., user was removed from team)
+  if (selectedTeamId && !selectedTeam) {
+    // Auto-select first team
+    const firstTeamId = getTeamId(myTeams[0]);
+    if (firstTeamId) {
+      setSelectedTeamId(firstTeamId);
+    }
+  }
 
   return (
     <div className="team-selector" ref={dropdownRef}>
-      <button
-        className="team-selector-trigger"
-        onClick={() => setIsOpen(!isOpen)}
-        aria-expanded={isOpen}
-      >
+      <button className="team-selector-trigger" onClick={() => setIsOpen(!isOpen)} aria-expanded={isOpen}>
         <div className="team-selector-content">
-          <span className="team-selector-name">
-            {selectedTeam ? selectedTeam.name : 'All Teams'}
-          </span>
+          <span className="team-selector-name">{selectedTeam ? selectedTeam.teamName : 'Select Team'}</span>
           <svg
             className={`team-selector-icon ${isOpen ? 'open' : ''}`}
             width="16"
@@ -91,41 +102,29 @@ export const TeamSelector = () => {
         <div className="team-selector-dropdown">
           <div className="team-selector-section">
             <div className="team-selector-section-header">MY TEAMS</div>
-            {teams.map((team) => (
-              <button
-                key={team.id}
-                className={`team-selector-item ${
-                  selectedTeam?.id === team.id ? 'active' : ''
-                }`}
-                onClick={() => handleTeamSelect(team)}
-              >
-                <span className="team-selector-item-emoji">
-                  {getTeamEmoji(team.role)}
-                </span>
-                <div className="team-selector-item-content">
-                  <div className="team-selector-item-name">{team.name}</div>
-                  <div className="team-selector-item-meta">
-                    {getRoleLabel(team.role)} • {team.memberCount} members
+            {myTeams.map((team) => {
+              const teamId = getTeamId(team);
+              return (
+                <button
+                  key={teamId}
+                  className={`team-selector-item ${selectedTeamId === teamId ? 'active' : ''}`}
+                  onClick={() => handleTeamSelect(teamId)}
+                >
+                  <span className="team-selector-item-emoji">{getRoleEmoji(team.role)}</span>
+                  <div className="team-selector-item-content">
+                    <div className="team-selector-item-name">{team.teamName}</div>
+                    <div className="team-selector-item-meta">
+                      {getRoleLabel(team.role)} • {team.playerCount} members
+                    </div>
                   </div>
-                </div>
-              </button>
-            ))}
+                </button>
+              );
+            })}
           </div>
 
           <div className="team-selector-actions">
-            <button
-              className={`team-selector-action ${
-                selectedTeam === null ? 'active' : ''
-              }`}
-              onClick={handleAllTeamsView}
-            >
-              All Teams View
-            </button>
-            <button
-              className="team-selector-action"
-              onClick={handleFindTeams}
-            >
-              Find More Teams →
+            <button className="team-selector-action" onClick={() => navigate(ROUTES.APP.TEAMS)}>
+              Manage Teams →
             </button>
           </div>
         </div>

@@ -43,10 +43,17 @@ export function getUser() {
 
 /**
  * Clear all authentication data from localStorage
+ * Also clears team context to prevent data leaks between users
  */
 export function clearAuth() {
   localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
   localStorage.removeItem(STORAGE_KEYS.USER);
+
+  // Clear team context (prevents previous user's team showing for new user)
+  localStorage.removeItem('selectedTeamId');
+
+  // Clear any other user-specific data
+  // Add more here if needed in the future
 }
 
 /**

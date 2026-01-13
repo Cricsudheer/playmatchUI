@@ -1,14 +1,15 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { Home, BarChart3, Users, Calendar, User } from 'lucide-react';
+import { ROUTES } from '../../constants/routes';
 
 export const BottomNav = () => {
   const navItems = [
-    { path: '/app/home', icon: Home, label: 'Home' },
-    { path: '/app/stats', icon: BarChart3, label: 'Stats' },
-    { path: '/app/teams', icon: Users, label: 'Teams' },
-    { path: '/app/events', icon: Calendar, label: 'Events' },
-    { path: '/app/profile', icon: User, label: 'Profile' }
+    { path: ROUTES.APP.HOME, icon: Home, label: 'Home' },
+    { path: ROUTES.APP.STATS, icon: BarChart3, label: 'Stats' },
+    { path: ROUTES.APP.TEAMS, icon: Users, label: 'Teams' },
+    { path: ROUTES.APP.EVENTS, icon: Calendar, label: 'Events' },
+    { path: ROUTES.APP.PROFILE, icon: User, label: 'Profile' }
   ];
 
   return (

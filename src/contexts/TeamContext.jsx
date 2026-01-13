@@ -1,55 +1,103 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { mockTeams } from '../data/mockData';
+import React, { createContext, useContext, useState } from 'react';
+import { createLogger } from '../utils/logger';
+import { getTeamId } from '../utils/team';
 
+const log = createLogger('TeamContext');
 const TeamContext = createContext(null);
 
+/**
+ * Team Context Provider
+ * Manages selectedTeamId (client state only)
+ * Persists in localStorage
+ */
 export const TeamProvider = ({ children }) => {
-  const [selectedTeam, setSelectedTeam] = useState(null);
-  const [teams] = useState(mockTeams);
-
-  // Load saved team from localStorage on mount
-  useEffect(() => {
-    const savedTeamId = localStorage.getItem('selectedTeamId');
-    if (savedTeamId === 'all') {
-      setSelectedTeam(null);
-    } else if (savedTeamId) {
-      const team = teams.find(t => t.id === parseInt(savedTeamId));
-      if (team) {
-        setSelectedTeam(team);
-      } else {
-        // Default to first team if saved team not found
-        setSelectedTeam(teams[0]);
-      }
-    } else {
-      // Default to first team
-      setSelectedTeam(teams[0]);
+  // Initialize from localStorage synchronously to avoid flash
+  const getInitialTeamId = () => {
+    const saved = localStorage.getItem('selectedTeamId');
+    if (saved && saved !== 'null') {
+      return parseInt(saved, 10);
     }
-  }, [teams]);
+    return null;
+  };
 
-  const selectTeam = (team) => {
-    setSelectedTeam(team);
-    if (team === null) {
-      localStorage.setItem('selectedTeamId', 'all');
+  const [selectedTeamId, setSelectedTeamIdState] = useState(getInitialTeamId);
+
+  /**
+   * Set selected team and persist to localStorage
+   */
+  const setSelectedTeamId = (teamId) => {
+    setSelectedTeamIdState(teamId);
+    if (teamId) {
+      localStorage.setItem('selectedTeamId', teamId.toString());
     } else {
-      localStorage.setItem('selectedTeamId', team.id.toString());
+      localStorage.removeItem('selectedTeamId');
     }
   };
 
-  const selectAllTeams = () => {
-    selectTeam(null);
+  /**
+   * Ensure a valid team is selected
+   * Call this after fetching teams
+   * @param {Array} myTeams - Array of user's teams
+   */
+  const ensureSelectedTeam = (myTeams) => {
+    if (!myTeams || myTeams.length === 0) {
+      // No teams - clear selection
+      setSelectedTeamId(null);
+      return;
+    }
+
+    // If no selection, pick first team
+    if (!selectedTeamId) {
+      const firstTeamId = getTeamId(myTeams[0]);
+      setSelectedTeamId(firstTeamId);
+      log.info('Auto-selected first team', { teamId: firstTeamId });
+      return;
+    }
+
+    // Validate current selection
+    const isValid = myTeams.some((t) => getTeamId(t) === selectedTeamId);
+    if (!isValid) {
+      // Selection not in list, pick first team
+      const firstTeamId = getTeamId(myTeams[0]);
+      setSelectedTeamId(firstTeamId);
+      log.warn('Invalid team selection, auto-selected first team', {
+        invalidId: selectedTeamId,
+        newId: firstTeamId,
+      });
+    }
   };
 
-  return (
-    <TeamContext.Provider value={{ selectedTeam, teams, selectTeam, selectAllTeams }}>
-      {children}
-    </TeamContext.Provider>
-  );
+  /**
+   * Reset team context (called on logout)
+   */
+  const resetTeamContext = () => {
+    setSelectedTeamId(null);
+    log.info('Team context reset');
+  };
+
+  const value = {
+    selectedTeamId,
+    setSelectedTeamId,
+    ensureSelectedTeam,
+    resetTeamContext,
+  };
+
+  return <TeamContext.Provider value={value}>{children}</TeamContext.Provider>;
 };
 
-export const useTeam = () => {
+/**
+ * Hook to access team context
+ */
+export const useTeamContext = () => {
   const context = useContext(TeamContext);
   if (!context) {
-    throw new Error('useTeam must be used within TeamProvider');
+    throw new Error('useTeamContext must be used within TeamProvider');
   }
   return context;
 };
+
+/**
+ * Alias for backwards compatibility
+ * @deprecated Use useTeamContext instead
+ */
+export const useTeam = useTeamContext;

@@ -1,6 +1,10 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import * as authService from '../services/authService';
 import { getAccessToken, getUser, clearAuth } from '../utils/authUtils';
+import { createLogger } from '../utils/logger';
+
+const log = createLogger('Auth');
 
 /**
  * Authentication Context
@@ -12,6 +16,7 @@ const AuthContext = createContext(null);
  * Wraps the app to provide shared auth state
  */
 export function AuthProvider({ children }) {
+  const queryClient = useQueryClient();
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -102,12 +107,21 @@ export function AuthProvider({ children }) {
 
   /**
    * Logout user
+   * Clears all auth state, localStorage, and React Query cache
    */
   const logoutUser = () => {
+    // Clear localStorage (tokens, user data, team selection)
     clearAuth();
+
+    // Clear React state
     setUser(null);
     setIsAuthenticated(false);
     setError('');
+
+    // Clear ALL cached queries (prevents data leaks between users)
+    queryClient.clear();
+
+    log.info('User logged out - all data cleared');
   };
 
   /**

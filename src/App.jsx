@@ -9,84 +9,108 @@ import { StatsPage } from './pages/app/StatsPage';
 import { TeamsPage } from './pages/app/TeamsPage';
 import { EventsPage } from './pages/app/EventsPage';
 import { ProfilePage } from './pages/app/ProfilePage';
-import { ProtectedRoute } from './components/ProtectedRoute';
-import { AuthProvider, useAuth } from './hooks/useAuth.jsx';
+import { ProtectedRoute } from './routes/ProtectedRoute';
+import { PublicOnlyRoute } from './routes/PublicOnlyRoute';
+import { OnboardingRoute } from './routes/OnboardingRoute';
+import { AuthProvider } from './hooks/useAuth.jsx';
 import { TeamProvider } from './contexts/TeamContext';
+import { BootstrapGate } from './components/BootstrapGate';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { Toaster } from 'sonner';
 import './styles/main.css';
 import './styles/app.css';
 
-/**
- * Login Redirect Component
- * Redirects authenticated users to app home, otherwise shows login
- */
-function LoginRedirect() {
-  const { isAuthenticated } = useAuth();
-  return isAuthenticated ? <Navigate to="/app/home" replace /> : <LoginPage />;
-}
+// Lazy load onboarding
+const OnboardingHub = React.lazy(() => import('./pages/OnboardingHub'));
 
 /**
- * Signup Redirect Component
- * Redirects authenticated users to app home, otherwise shows signup
+ * Main App
  */
-function SignupRedirect() {
-  const { isAuthenticated } = useAuth();
-  return isAuthenticated ? <Navigate to="/app/home" replace /> : <SignupPage />;
-}
-
-/**
- * Main App Content with Protected Routes
- * New routing structure with AppShell layout
- */
-function AppContent() {
+function App() {
   return (
-    <Routes>
-      {/* Public Routes */}
-      <Route path="/login" element={<LoginRedirect />} />
-      <Route path="/signup" element={<SignupRedirect />} />
+    <ErrorBoundary>
+      <AuthProvider>
+        <TeamProvider>
+          <Router>
+            <Toaster position="top-right" richColors />
+            <BootstrapGate>
+            <React.Suspense
+              fallback={
+                <div className="loading-screen">
+                  <div>Loading...</div>
+                </div>
+              }
+            >
+              <Routes>
+              {/* Public Routes */}
+              <Route
+                path="/login"
+                element={
+                  <PublicOnlyRoute>
+                    <LoginPage />
+                  </PublicOnlyRoute>
+                }
+              />
+              <Route
+                path="/signup"
+                element={
+                  <PublicOnlyRoute>
+                    <SignupPage />
+                  </PublicOnlyRoute>
+                }
+              />
 
-      {/* Root redirect to app home */}
-      <Route path="/" element={<Navigate to="/app/home" replace />} />
+              {/* Onboarding Route */}
+              <Route
+                path="/onboarding"
+                element={
+                  <ProtectedRoute>
+                    <OnboardingRoute>
+                      <OnboardingHub />
+                    </OnboardingRoute>
+                  </ProtectedRoute>
+                }
+              />
 
-      {/* Protected App Routes with AppShell */}
-      <Route
-        path="/app"
-        element={
-          <ProtectedRoute>
-            <AppShell />
-          </ProtectedRoute>
-        }
-      >
-        <Route path="home" element={<HomePage />} />
-        <Route path="stats" element={<StatsPage />} />
-        <Route path="teams" element={<TeamsPage />} />
-        <Route path="events" element={<EventsPage />} />
-        <Route path="profile" element={<ProfilePage />} />
-      </Route>
+              {/* Profile Setup */}
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <PlayerProfilePage />
+                  </ProtectedRoute>
+                }
+              />
 
-      {/* Full Profile Edit Page (outside AppShell) */}
-      <Route
-        path="/profile"
-        element={
-          <ProtectedRoute>
-            <PlayerProfilePage />
-          </ProtectedRoute>
-        }
-      />
-    </Routes>
-  );
-}
+              {/* Protected App Routes (requires team) */}
+              <Route
+                path="/app"
+                element={
+                  <ProtectedRoute requireTeam>
+                    <AppShell />
+                  </ProtectedRoute>
+                }
+              >
+                <Route path="home" element={<HomePage />} />
+                <Route path="stats" element={<StatsPage />} />
+                <Route path="teams" element={<TeamsPage />} />
+                <Route path="events" element={<EventsPage />} />
+                <Route path="profile" element={<ProfilePage />} />
+              </Route>
 
-export default function App() {
-  return (
-    <AuthProvider>
-      <TeamProvider>
-        <Router>
-          <Toaster position="top-right" richColors />
-          <AppContent />
+              {/* Root redirect */}
+              <Route path="/" element={<Navigate to="/app/home" replace />} />
+
+              {/* Catch-all */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </React.Suspense>
+          </BootstrapGate>
         </Router>
       </TeamProvider>
     </AuthProvider>
+    </ErrorBoundary>
   );
 }
 
+export default App;

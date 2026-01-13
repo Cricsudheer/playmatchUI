@@ -1,0 +1,478 @@
+/* =================================================================
+   ONBOARDING - MODERN UI/UX (Dark Theme)
+   Matches PlayMatch's design system
+   ================================================================= */
+
+/* ==================== CONTAINER ==================== */
+.onboarding-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at top, #1e293b 0%, #050816 40%);
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Animated background effect */
+.onboarding-container::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(251, 191, 36, 0.05) 0%, transparent 70%);
+  animation: rotate 30s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.onboarding-content {
+  max-width: 900px;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+/* ==================== HEADER ==================== */
+.onboarding-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.onboarding-title {
+  font-size: 2.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #fbbf24 0%, #a855f7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.onboarding-subtitle {
+  font-size: 1.125rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* ==================== GRID SECTIONS ==================== */
+.onboarding-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.onboarding-section {
+  background: var(--card-bg);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.onboarding-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.onboarding-section:hover {
+  transform: translateY(-4px);
+  border-color: rgba(251, 191, 36, 0.3);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 20px rgba(251, 191, 36, 0.1);
+}
+
+.onboarding-section:hover::before {
+  opacity: 1;
+}
+
+.onboarding-section-featured {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.15) 0%, rgba(168, 85, 247, 0.15) 100%);
+  border-color: rgba(251, 191, 36, 0.3);
+}
+
+.onboarding-section-featured::before {
+  opacity: 1;
+}
+
+.onboarding-section-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+.onboarding-section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 0.5rem 0;
+  letter-spacing: -0.01em;
+}
+
+.onboarding-section-description {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin: 0 0 1.5rem 0;
+  line-height: 1.5;
+}
+
+.onboarding-section-button {
+  width: 100%;
+  padding: 0.75rem 1.5rem;
+  background: rgba(251, 191, 36, 0.1);
+  color: var(--accent);
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.onboarding-section-button:hover {
+  background: rgba(251, 191, 36, 0.2);
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.onboarding-section-featured .onboarding-section-button {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+  color: #050816;
+  border: none;
+  font-weight: 700;
+}
+
+.onboarding-section-featured .onboarding-section-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(251, 191, 36, 0.4);
+}
+
+/* ==================== BACK BUTTON ==================== */
+.onboarding-back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  cursor: pointer;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  transition: all 0.2s ease;
+}
+
+.onboarding-back-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(251, 191, 36, 0.3);
+}
+
+/* ==================== FORM CONTAINER ==================== */
+.onboarding-form-container {
+  max-width: 600px;
+  width: 100%;
+  background: var(--card-bg);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 3rem;
+  box-shadow: var(--shadow-soft);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Glassmorphism effect */
+.onboarding-form-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+}
+
+.onboarding-form-header {
+  margin-bottom: 2.5rem;
+  text-align: center;
+}
+
+.onboarding-form-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
+}
+
+.onboarding-form-subtitle {
+  font-size: 1rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* ==================== FORM ELEMENTS ==================== */
+.onboarding-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.onboarding-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.onboarding-form-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.onboarding-form-label span {
+  color: var(--danger);
+}
+
+/* Input Field Styles */
+.onboarding-form-input,
+.onboarding-form-textarea {
+  padding: 0.875rem 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  font-size: 1rem;
+  color: var(--text-primary);
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.onboarding-form-input::placeholder,
+.onboarding-form-textarea::placeholder {
+  color: var(--text-soft);
+}
+
+.onboarding-form-input:hover,
+.onboarding-form-textarea:hover {
+  border-color: rgba(251, 191, 36, 0.3);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.onboarding-form-input:focus,
+.onboarding-form-textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.1);
+}
+
+.onboarding-form-input:disabled,
+.onboarding-form-textarea:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.onboarding-form-textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.onboarding-form-hint {
+  font-size: 0.875rem;
+  color: var(--text-soft);
+}
+
+.onboarding-form-error {
+  font-size: 0.875rem;
+  color: var(--danger);
+}
+
+/* ==================== FORM ACTIONS ==================== */
+.onboarding-form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.onboarding-form-button {
+  flex: 1;
+  padding: 1rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Primary Button */
+.onboarding-form-button-primary {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+  color: #050816;
+  font-weight: 700;
+}
+
+.onboarding-form-button-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+.onboarding-form-button-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(251, 191, 36, 0.4);
+}
+
+.onboarding-form-button-primary:hover:not(:disabled)::before {
+  left: 100%;
+}
+
+.onboarding-form-button-primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.onboarding-form-button-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Secondary Button */
+.onboarding-form-button-secondary {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
+}
+
+.onboarding-form-button-secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(251, 191, 36, 0.3);
+}
+
+/* ==================== LOADING STATE ==================== */
+.onboarding-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.onboarding-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(5, 8, 22, 0.3);
+  border-top-color: #050816;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 640px) {
+  .onboarding-container {
+    padding: 1.5rem;
+  }
+
+  .onboarding-title {
+    font-size: 2rem;
+  }
+
+  .onboarding-subtitle {
+    font-size: 1rem;
+  }
+
+  .onboarding-form-container {
+    padding: 2rem 1.5rem;
+  }
+
+  .onboarding-form-title {
+    font-size: 1.75rem;
+  }
+
+  .onboarding-section {
+    padding: 1.5rem;
+  }
+
+  .onboarding-section-icon {
+    font-size: 2.5rem;
+  }
+
+  .onboarding-form-actions {
+    flex-direction: column;
+  }
+
+  .onboarding-form-button {
+    padding: 0.875rem 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .onboarding-container {
+    padding: 1rem;
+  }
+
+  .onboarding-title {
+    font-size: 1.75rem;
+  }
+
+  .onboarding-form-container {
+    padding: 1.5rem;
+  }
+
+  .onboarding-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==================== ACCESSIBILITY ==================== */
+.onboarding-form-input:focus-visible,
+.onboarding-form-textarea:focus-visible,
+.onboarding-form-button:focus-visible,
+.onboarding-section-button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,41 +1,24 @@
-import { API_CONFIG } from '../constants/config';
-import { AUTH_ENDPOINTS, ERROR_MESSAGES } from '../constants/authConfig';
-import { getAccessToken, saveTokens, saveUser } from '../utils/authUtils';
-import { getAPIErrorMessage } from '../utils/validationUtils';
+/**
+ * Auth Service
+ * Business logic layer for authentication
+ * Orchestrates API calls and manages auth state persistence
+ */
+
+import { login as apiLogin, register as apiRegister, refreshToken as apiRefreshToken } from '../api/auth.api';
+import { saveTokens, saveUser, clearAuth } from '../utils/authUtils';
+import { createLogger } from '../utils/logger';
+
+const log = createLogger('AuthService');
 
 /**
  * Login user with email and password
+ * @param {string} email - User email
+ * @param {string} password - User password
+ * @returns {Promise<Object>} { accessToken, refreshToken, user }
  */
 export async function login(email, password) {
-  const url = `${API_CONFIG.AUTH_BASE_URL}${AUTH_ENDPOINTS.LOGIN}`;
-
   try {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-      body: JSON.stringify({ email, password }),
-    });
-
-    // Handle error responses
-    if (!response.ok) {
-      // Try to get error details from response body
-      let errorMessage = getAPIErrorMessage(response.status);
-      try {
-        const errorData = await response.json();
-        if (errorData.message || errorData.error) {
-          errorMessage = errorData.message || errorData.error;
-        }
-      } catch (parseError) {
-        // If parsing fails, use default error message
-      }
-      throw new Error(errorMessage);
-    }
-
-    // Parse successful response
-    const data = await response.json();
+    const data = await apiLogin(email, password);
 
     // Validate login response has required data
     if (!data || !data.accessToken || !data.user) {
@@ -46,126 +29,80 @@ export async function login(email, password) {
     saveTokens(data.accessToken, data.refreshToken);
     saveUser(data.user);
 
+    log.info('User logged in successfully', { email: data.user.email });
     return data;
   } catch (error) {
-    // Handle network errors
-    if (error.name === 'TypeError' && error.message.includes('fetch')) {
-      throw new Error(ERROR_MESSAGES.NETWORK_ERROR);
-    }
-    // Re-throw other errors
+    log.error('Login failed', { email, error: error.message });
     throw error;
   }
 }
 
 /**
  * Register new user
+ * Automatically logs in after successful registration
+ * @param {Object} userData - User registration data
+ * @returns {Promise<Object>} Login data { accessToken, refreshToken, user }
  */
 export async function register(userData) {
-  const url = `${API_CONFIG.AUTH_BASE_URL}${AUTH_ENDPOINTS.REGISTER}`;
-
   try {
-    console.log('[authService] Sending registration request...');
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-      body: JSON.stringify(userData),
-    });
+    log.info('Sending registration request');
+    const registeredUser = await apiRegister(userData);
 
-    console.log('[authService] Registration response status:', response.status);
-
-    // Handle error responses
-    if (!response.ok) {
-      // Try to get error details from response body
-      let errorMessage = getAPIErrorMessage(response.status);
-      try {
-        const errorData = await response.json();
-        console.error('[authService] Registration error response:', errorData);
-        if (errorData.message || errorData.error) {
-          errorMessage = errorData.message || errorData.error;
-        }
-      } catch (parseError) {
-        // If parsing fails, use default error message
-        console.error('[authService] Failed to parse error response');
-      }
-      console.error('[authService] Registration failed:', errorMessage);
-      throw new Error(errorMessage);
-    }
-
-    // Parse successful response
-    const registeredUser = await response.json();
-    console.log('[authService] User registered successfully:', registeredUser.email);
-
-    // Validate registration response has expected data
+    // Validate registration response
     if (!registeredUser || !registeredUser.id || !registeredUser.email) {
-      console.error('[authService] Invalid registration response structure');
+      log.error('Invalid registration response structure');
       throw new Error('Invalid registration response from server');
     }
 
-    // Auto-login after SUCCESSFUL registration only
-    console.log('[authService] Attempting auto-login after registration...');
+    log.info('User registered successfully', { email: registeredUser.email });
+
+    // Auto-login after successful registration
+    log.debug('Attempting auto-login after registration');
     const loginData = await login(userData.email, userData.password);
 
-    console.log('[authService] Auto-login successful');
+    log.info('Auto-login successful');
     return loginData;
   } catch (error) {
-    // Handle network errors
-    if (error.name === 'TypeError' && error.message.includes('fetch')) {
-      console.error('[authService] Network error during registration');
-      throw new Error(ERROR_MESSAGES.NETWORK_ERROR);
-    }
-    // Re-throw other errors
-    console.error('[authService] Registration error:', error.message);
+    log.error('Registration error', { error: error.message });
     throw error;
   }
 }
 
 /**
  * Refresh access token using refresh token cookie
+ * @returns {Promise<Object>} { accessToken, refreshToken, user }
  */
 export async function refreshToken() {
-  const url = `${API_CONFIG.AUTH_BASE_URL}${AUTH_ENDPOINTS.REFRESH_TOKEN}`;
-
   try {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-      body: JSON.stringify({}),
-    });
+    const data = await apiRefreshToken();
 
-    if (!response.ok) {
-      throw new Error('Token refresh failed');
-    }
-
-    const data = await response.json();
-
-    // Validate refresh token response has required data
+    // Validate refresh token response
     if (!data || !data.accessToken || !data.user) {
       throw new Error('Invalid refresh token response from server');
     }
 
-    // Save new tokens and user data ONLY after validation
+    // Save new tokens and user data
     saveTokens(data.accessToken, data.refreshToken);
     saveUser(data.user);
 
+    log.debug('Token refreshed successfully');
     return data;
   } catch (error) {
     // Clear any stored auth data on refresh failure
-    const { clearAuth } = require('../utils/authUtils');
     clearAuth();
+    log.error('Token refresh failed - cleared auth', { error: error.message });
     throw new Error('Session expired. Please login again.');
   }
 }
 
 /**
+ * @deprecated Use http.js directly instead
  * Fetch with authentication - automatically adds auth header and handles 401
+ * This function is kept for backwards compatibility but should not be used
+ * for new code. Use the centralized http.js client instead.
  */
 export async function fetchWithAuth(url, options = {}) {
+  const { getAccessToken } = require('../utils/authUtils');
   const token = getAccessToken();
 
   const authHeaders = {

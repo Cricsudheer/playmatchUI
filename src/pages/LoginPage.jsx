@@ -1,14 +1,12 @@
-import { useState, useEffect } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth.jsx';
 import { FormInput } from '../components/FormInput';
 import { FormButton } from '../components/FormButton';
 import { validateEmail, validatePassword } from '../utils/validationUtils';
 
 export function LoginPage() {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { login, isAuthenticated } = useAuth();
+  const { login } = useAuth();
 
   const [formData, setFormData] = useState({
     email: '',
@@ -23,13 +21,8 @@ export function LoginPage() {
   const [formError, setFormError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Redirect to dashboard if already authenticated
-  useEffect(() => {
-    if (isAuthenticated) {
-      const from = location.state?.from || '/';
-      navigate(from, { replace: true });
-    }
-  }, [isAuthenticated, navigate, location]);
+  // Don't redirect here - let PublicOnlyRoute handle it after teams load
+  // This prevents race conditions between login and myTeams fetch
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -77,12 +70,10 @@ export function LoginPage() {
     try {
       await login(formData.email, formData.password);
 
-      // Navigate to intended page or dashboard
-      const from = location.state?.from || '/';
-      navigate(from, { replace: true });
+      // Don't navigate here - PublicOnlyRoute will handle redirect
+      // after myTeams query completes to prevent race conditions
     } catch (error) {
       setFormError(error.message);
-    } finally {
       setIsSubmitting(false);
     }
   };

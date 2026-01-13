@@ -185,6 +185,13 @@
   max-width: 200px;
 }
 
+/* Empty state styling */
+.team-selector-empty .team-selector-name {
+  color: #9ca3af;
+  font-size: 14px;
+  cursor: pointer;
+}
+
 .team-selector-icon {
   flex-shrink: 0;
   color: var(--text-secondary);
@@ -200,12 +207,22 @@
   top: calc(100% + var(--space-sm));
   left: 0;
   min-width: 280px;
+  max-width: 90vw;
   background: var(--card-bg);
   border: 1px solid var(--border-subtle);
   border-radius: 8px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   overflow: hidden;
   z-index: 200;
+}
+
+/* Mobile responsive: full width on small screens */
+@media (max-width: 640px) {
+  .team-selector-dropdown {
+    min-width: 240px;
+    max-width: calc(100vw - 32px);
+    right: 0;
+  }
 }
 
 .team-selector-section {
