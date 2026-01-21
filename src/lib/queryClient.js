@@ -15,6 +15,10 @@ function handleQueryError(error) {
 /**
  * React Query Client Configuration
  * Centralized configuration for all queries and mutations
+ * 
+ * MVP Configuration:
+ * - No retries (fail fast for quicker debugging)
+ * - Token refresh is handled at HTTP layer (single retry there)
  */
 export const queryClient = new QueryClient({
   queryCache: new QueryCache({
@@ -24,25 +28,12 @@ export const queryClient = new QueryClient({
     queries: {
       staleTime: 5 * 60 * 1000, // 5 minutes
       gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
-      retry: (failureCount, error) => {
-        // Don't retry auth errors (handled by HTTP layer with token refresh)
-        if (error?.status === 401 || error?.status === 403) {
-          return false;
-        }
-        return failureCount < 1;
-      },
-      refetchOnWindowFocus: true,
+      retry: false, // MVP: No retries - fail fast
+      refetchOnWindowFocus: false, // MVP: Disable aggressive refetching
       refetchOnReconnect: true,
     },
     mutations: {
-      retry: (failureCount, error) => {
-        // Don't retry auth errors or client errors
-        if (error?.status === 401 || error?.status === 403 || (error?.status >= 400 && error?.status < 500)) {
-          return false;
-        }
-        return failureCount < 1;
-      },
-      // Global error handler for mutations
+      retry: false, // MVP: No retries - fail fast
       onError: handleQueryError,
     },
   },
