@@ -7,7 +7,9 @@ export function saveTokens(accessToken, refreshToken) {
   if (accessToken) {
     localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, accessToken);
   }
-  // refreshToken is managed via httpOnly cookie by backend
+  if (refreshToken) {
+    localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, refreshToken);
+  }
 }
 
 /**
@@ -15,6 +17,13 @@ export function saveTokens(accessToken, refreshToken) {
  */
 export function getAccessToken() {
   return localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
+}
+
+/**
+ * Get refresh token from localStorage
+ */
+export function getRefreshToken() {
+  return localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
 }
 
 /**
@@ -47,6 +56,7 @@ export function getUser() {
  */
 export function clearAuth() {
   localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
+  localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
   localStorage.removeItem(STORAGE_KEYS.USER);
 
   // Clear team context (prevents previous user's team showing for new user)

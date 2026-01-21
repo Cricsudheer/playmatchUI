@@ -40,5 +40,6 @@ export const ERROR_MESSAGES = {
 
 export const STORAGE_KEYS = {
   ACCESS_TOKEN: 'playmatch_access_token',
+  REFRESH_TOKEN: 'playmatch_refresh_token',
   USER: 'playmatch_user',
 };
