@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useJoinTeam } from '../../hooks/mutations/useJoinTeam';
-import { useTeam } from '../../contexts/TeamContext';
+import { useJoinTeam } from '../../hooks/useMyTeams';
+import { useTeamContext } from '../../contexts/TeamContext';
 import { toast } from 'sonner';
 import './onboarding.css';
 
@@ -12,7 +12,7 @@ import './onboarding.css';
 function JoinTeamPage() {
   const navigate = useNavigate();
   const joinTeamMutation = useJoinTeam();
-  const { selectTeam } = useTeam();
+  const { setSelectedTeamId } = useTeamContext();
 
   const [inviteCode, setInviteCode] = useState('');
   const [error, setError] = useState('');
@@ -44,7 +44,7 @@ function JoinTeamPage() {
       // Set the joined team as selected (optimistic update)
       if (joinedTeam.teamId || joinedTeam.id) {
         const teamId = joinedTeam.teamId || joinedTeam.id;
-        selectTeam(teamId);
+        setSelectedTeamId(teamId);
       }
 
       toast.success('Successfully joined team!', {
@@ -59,7 +59,7 @@ function JoinTeamPage() {
       if (error.code === 'ALREADY_MEMBER') {
         // User is already a member, redirect them anyway
         if (error.teamId) {
-          selectTeam(error.teamId);
+          setSelectedTeamId(error.teamId);
         }
         toast.info('You are already a member of this team');
         navigate('/app/home');

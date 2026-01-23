@@ -1,13 +1,18 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useMyJoinRequests } from '../../hooks/useJoinRequests';
 import './onboarding.css';
 
 /**
  * Onboarding Hub - Main choice screen
  * Shows 3 options: Create Team, Join Team, Find Team
+ * Also shows pending join requests if any
  */
 function OnboardingHub() {
   const navigate = useNavigate();
+  const { data: myRequests, isLoading } = useMyJoinRequests();
+  
+  const pendingRequests = myRequests?.filter(r => r.requestStatus === 'PENDING') || [];
 
   const options = [
     {
@@ -46,6 +51,31 @@ function OnboardingHub() {
           </p>
         </div>
 
+        {/* Pending Requests Section */}
+        {!isLoading && pendingRequests.length > 0 && (
+          <div style={styles.pendingSection}>
+            <h3 style={styles.pendingSectionTitle}>
+              ⏳ Pending Requests ({pendingRequests.length})
+            </h3>
+            <p style={styles.pendingSectionText}>
+              You have requests waiting for approval
+            </p>
+            <div style={styles.pendingList}>
+              {pendingRequests.slice(0, 3).map((request) => (
+                <div key={request.id} style={styles.pendingItem}>
+                  <span style={styles.pendingTeam}>{request.teamName}</span>
+                  <span style={styles.pendingStatus}>Pending</span>
+                </div>
+              ))}
+              {pendingRequests.length > 3 && (
+                <p style={styles.pendingMore}>
+                  +{pendingRequests.length - 3} more
+                </p>
+              )}
+            </div>
+          </div>
+        )}
+
         <div className="onboarding-options">
           {options.map((option) => (
             <button
@@ -68,5 +98,57 @@ function OnboardingHub() {
     </div>
   );
 }
+
+const styles = {
+  pendingSection: {
+    backgroundColor: 'rgba(251, 191, 36, 0.1)',
+    border: '1px solid rgba(251, 191, 36, 0.3)',
+    borderRadius: '12px',
+    padding: '16px',
+    marginBottom: '24px',
+  },
+  pendingSectionTitle: {
+    fontSize: '1rem',
+    fontWeight: 600,
+    color: '#fbbf24',
+    marginBottom: '4px',
+  },
+  pendingSectionText: {
+    fontSize: '0.875rem',
+    color: 'var(--text-muted, #9ca3af)',
+    marginBottom: '12px',
+  },
+  pendingList: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '8px',
+  },
+  pendingItem: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '8px 12px',
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderRadius: '8px',
+  },
+  pendingTeam: {
+    fontSize: '0.9375rem',
+    color: 'var(--text-primary, #fff)',
+    fontWeight: 500,
+  },
+  pendingStatus: {
+    fontSize: '0.75rem',
+    color: '#fbbf24',
+    padding: '2px 8px',
+    backgroundColor: 'rgba(251, 191, 36, 0.2)',
+    borderRadius: '4px',
+  },
+  pendingMore: {
+    fontSize: '0.75rem',
+    color: 'var(--text-muted, #9ca3af)',
+    textAlign: 'center',
+    marginTop: '4px',
+  },
+};
 
 export default OnboardingHub;

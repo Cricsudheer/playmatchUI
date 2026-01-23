@@ -1,14 +1,23 @@
-import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import React from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Bell, Settings } from 'lucide-react';
 import { TeamSelector } from './TeamSelector';
+import { usePendingRequestsCount } from '../../hooks/useJoinRequests';
 
 export const Header = () => {
   const location = useLocation();
-  const [notificationCount] = useState(3); // Mock notification count
+  const navigate = useNavigate();
+  
+  // Get pending requests count for captains (requests waiting for their approval)
+  const { data: pendingCount = 0 } = usePendingRequestsCount();
 
   // Don't show team selector on profile page
   const isProfilePage = location.pathname === '/app/profile';
+
+  const handleNotificationsClick = () => {
+    // Navigate to teams page with requests tab active
+    navigate('/app/teams?tab=captain-requests');
+  };
 
   return (
     <header className="app-header">
@@ -29,10 +38,14 @@ export const Header = () => {
 
           {/* Right side - Icons */}
           <div className="app-header-right">
-            <button className="app-header-icon-btn" aria-label="Notifications">
+            <button 
+              className="app-header-icon-btn" 
+              aria-label="Notifications"
+              onClick={handleNotificationsClick}
+            >
               <Bell size={20} strokeWidth={2} />
-              {notificationCount > 0 && (
-                <span className="app-header-badge">{notificationCount}</span>
+              {pendingCount > 0 && (
+                <span className="app-header-badge">{pendingCount > 9 ? '9+' : pendingCount}</span>
               )}
             </button>
 
