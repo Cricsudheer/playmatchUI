@@ -150,26 +150,24 @@ export function HomePage() {
     );
   }
 
-  // Welcome state for unauthenticated users
+  // Welcome state for unauthenticated users - Landing Page
   if (!isAuthenticated) {
     return (
-      <div className="mvp-page mvp-dashboard">
-        <header className="mvp-dashboard-header">
-          <p className="mvp-dashboard-greeting">Welcome to</p>
-          <h1 className="mvp-dashboard-title">GameTeam</h1>
-        </header>
+      <div className="mvp-page mvp-landing">
+        {/* Hero Section */}
+        <section className="mvp-landing-hero">
+          <p className="mvp-landing-welcome">Welcome to GameTeam</p>
+          
+          <h1 className="mvp-landing-headline">
+            Organise Matches.
+            <br />
+            <span className="mvp-landing-headline-accent">Not WhatsApp Groups.</span>
+          </h1>
 
-        <section className="mvp-dashboard-cta">
-          <PrimaryButton onClick={handleCreateMatch}>
-            Create match
-          </PrimaryButton>
-        </section>
-
-        <section className="mvp-dashboard-section">
-          <div className="mvp-empty-state">
-            <div className="mvp-empty-icon">+</div>
-            <p className="mvp-empty-title">Organize your first match</p>
-            <p>Create a match, invite your team, and track availability.</p>
+          <div className="mvp-landing-cta-group">
+            <PrimaryButton onClick={handleCreateMatch} className="mvp-landing-cta">
+              Create your match
+            </PrimaryButton>
           </div>
         </section>
 

@@ -152,6 +152,54 @@
 }
 
 /* ================================================
+   Landing Page - Mobile-first Hero
+   ================================================ */
+.mvp-landing {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100dvh - 120px);
+  justify-content: center;
+}
+
+.mvp-landing-hero {
+  text-align: center;
+  padding: var(--space-5) 0;
+}
+
+.mvp-landing-welcome {
+  font-size: var(--text-sm);
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 0 0 var(--space-4) 0;
+}
+
+.mvp-landing-headline {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin: 0 0 var(--space-8) 0;
+}
+
+.mvp-landing-headline-accent {
+  color: #25D366;
+}
+
+.mvp-landing-cta-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.mvp-landing-cta {
+  width: 100%;
+  padding: var(--space-4) var(--space-6) !important;
+  font-size: var(--text-lg) !important;
+}
+
+/* ================================================
    Dashboard - Typography-led
    ================================================ */
 .mvp-dashboard-header {
