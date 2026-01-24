@@ -6,20 +6,22 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { useAuth } from '../../hooks/useAuth';
+import { useMvpAuth } from '../hooks/useMvpAuth';
 import {
   GhostButton,
   PrimaryButton,
   SecondaryButton,
   Input,
+  ConfirmModal,
 } from '../components';
 
 export function ProfilePage() {
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user, logout } = useMvpAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(user?.name || '');
   const [loading, setLoading] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   const handleSave = async () => {
     if (!name.trim() || name.trim().length < 2) {
@@ -40,8 +42,13 @@ export function ProfilePage() {
   };
 
   const handleLogout = () => {
+    setShowLogoutConfirm(true);
+  };
+
+  const confirmLogout = () => {
     logout();
-    navigate('/');
+    toast.success('Logged out successfully');
+    navigate('/login', { replace: true });
   };
 
   return (
@@ -98,6 +105,17 @@ export function ProfilePage() {
           Log Out
         </SecondaryButton>
       </section>
+
+      {/* Logout Confirmation Modal */}
+      <ConfirmModal
+        isOpen={showLogoutConfirm}
+        onClose={() => setShowLogoutConfirm(false)}
+        onConfirm={confirmLogout}
+        title="Log Out"
+        message="Are you sure you want to log out?"
+        confirmLabel="Log Out"
+        confirmVariant="danger"
+      />
     </div>
   );
 }

@@ -4,10 +4,22 @@
  * Simple auth state management for MVP routes
  * Uses localStorage for token storage
  * Completely separate from the existing app's auth system
+ * 
+ * Features:
+ * - Auto-repair incomplete user data on initialization
+ * - Cross-tab synchronization
+ * - Refresh token support
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { MVP_AUTH_TOKEN_KEY, MVP_REFRESH_TOKEN_KEY, MVP_USER_KEY } from '../constants';
+
+/**
+ * Check if user data is complete (has all required fields)
+ */
+function isUserDataComplete(user) {
+  return user && typeof user.name === 'string' && user.name.trim().length > 0;
+}
 
 /**
  * Get current MVP auth state from localStorage
@@ -29,6 +41,39 @@ function getAuthState() {
  */
 export function useMvpAuth() {
   const [authState, setAuthState] = useState(getAuthState);
+  const repairAttempted = useRef(false);
+
+  // Auto-repair incomplete user data on mount
+  // This handles users who logged in before we started storing 'name'
+  useEffect(() => {
+    const repairIfNeeded = async () => {
+      // Only attempt repair once per session
+      if (repairAttempted.current) return;
+      
+      const { token, user } = getAuthState();
+      
+      // If authenticated but user data is incomplete, repair it
+      if (token && !isUserDataComplete(user)) {
+        repairAttempted.current = true;
+        console.log('[useMvpAuth] Detected incomplete user data, attempting repair...');
+        
+        try {
+          // Dynamically import to avoid circular dependencies
+          const { repairUserData } = await import('../services/api');
+          const repaired = await repairUserData();
+          
+          if (repaired) {
+            // State will update via mvp-auth-change event
+            console.log('[useMvpAuth] User data repaired successfully');
+          }
+        } catch (error) {
+          console.error('[useMvpAuth] Failed to repair user data:', error);
+        }
+      }
+    };
+    
+    repairIfNeeded();
+  }, []);
 
   // Listen for storage changes (in case auth happens in another tab/component)
   useEffect(() => {

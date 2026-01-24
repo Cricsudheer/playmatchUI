@@ -9,16 +9,19 @@
 
 import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 import { useMyMatches } from '../hooks/useMatch';
 import { useMvpAuth } from '../hooks/useMvpAuth';
 import {
   PrimaryButton,
+  GhostButton,
   MatchCard,
   MatchCardCompact,
   NoMatches,
   DashboardSkeleton,
   ErrorState,
   OtpAuthModal,
+  ConfirmModal,
 } from '../components';
 import {
   getMatchHealth,
@@ -33,9 +36,20 @@ import {
 
 export function HomePage() {
   const navigate = useNavigate();
-  const { user, isAuthenticated } = useMvpAuth();
+  const { user, isAuthenticated, logout } = useMvpAuth();
   const { matches, stats, loading, error, refetch } = useMyMatches();
   const [showOtpModal, setShowOtpModal] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+
+  const handleLogout = () => {
+    setShowLogoutConfirm(true);
+  };
+
+  const confirmLogout = () => {
+    logout();
+    toast.success('Logged out successfully');
+    navigate('/login', { replace: true });
+  };
 
   // Categorize matches based on API response
   // API returns: matchId, teamName, status, startTime, userRole, isCaptain, teamCount, backupCount, emergencyCount, etc.
@@ -174,10 +188,25 @@ export function HomePage() {
     <div className="mvp-page mvp-dashboard">
       {/* Header */}
       <header className="mvp-dashboard-header">
-        <p className="mvp-dashboard-greeting">Welcome back</p>
-        <h1 className="mvp-dashboard-title">
-          {user?.name?.split(' ')[0] || 'Captain'}
-        </h1>
+        <div className="mvp-dashboard-header-top">
+          <div>
+            <p className="mvp-dashboard-greeting">Welcome back</p>
+            <h1 className="mvp-dashboard-title">
+              {user?.name?.split(' ')[0] || 'Captain'}
+            </h1>
+          </div>
+          <button
+            className="mvp-header-logout-btn"
+            onClick={handleLogout}
+            aria-label="Log out"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+          </button>
+        </div>
       </header>
 
       {/* Primary CTA - Always visible */}
@@ -247,6 +276,17 @@ export function HomePage() {
           </>
         )}
       </section>
+
+      {/* Logout Confirmation Modal */}
+      <ConfirmModal
+        isOpen={showLogoutConfirm}
+        onClose={() => setShowLogoutConfirm(false)}
+        onConfirm={confirmLogout}
+        title="Log Out"
+        message="Are you sure you want to log out?"
+        confirmLabel="Log Out"
+        confirmVariant="danger"
+      />
     </div>
   );
 }

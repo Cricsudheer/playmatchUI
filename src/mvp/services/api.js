@@ -7,7 +7,7 @@
  */
 
 import { API_CONFIG } from '../../constants/config';
-import { MVP_ENDPOINTS, MVP_AUTH_TOKEN_KEY, MVP_USER_KEY } from '../constants';
+import { MVP_ENDPOINTS, MVP_AUTH_TOKEN_KEY, MVP_REFRESH_TOKEN_KEY, MVP_USER_KEY } from '../constants';
 
 /**
  * Custom API Error class for RFC 7807 Problem Details
@@ -161,6 +161,99 @@ async function publicFetch(endpoint, options = {}) {
   }
   
   return response.json();
+}
+
+// ============================================
+// Auth/Profile API
+// ============================================
+
+/**
+ * Refresh token to get new access token and user data
+ * Returns: { accessToken, refreshToken, userId, phoneNumber, name }
+ * Also used to repair stale user data in localStorage
+ */
+export async function refreshToken() {
+  const storedRefreshToken = localStorage.getItem(MVP_REFRESH_TOKEN_KEY);
+  
+  if (!storedRefreshToken) {
+    throw new ApiError('MVP-AUTH-011', 'No refresh token', 401, 'Please login again.');
+  }
+  
+  const url = `${API_CONFIG.BASE_URL}${MVP_ENDPOINTS.REFRESH_TOKEN}`;
+  
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ refreshToken: storedRefreshToken }),
+  });
+  
+  if (!response.ok) {
+    const error = await parseErrorResponse(response);
+    throw error;
+  }
+  
+  return response.json();
+}
+
+/**
+ * Repair user data in localStorage if incomplete
+ * Uses refresh token to get fresh user data from API
+ * Returns true if repair was needed and successful
+ * 
+ * NOTE: If user has no refresh token (logged in before this feature),
+ * they will need to re-login once to get their name displayed.
+ */
+export async function repairUserData() {
+  try {
+    // First check if we have a refresh token - if not, skip repair
+    const storedRefreshToken = localStorage.getItem(MVP_REFRESH_TOKEN_KEY);
+    if (!storedRefreshToken) {
+      console.log('[API] No refresh token available, skipping user data repair. User needs to re-login.');
+      return false;
+    }
+    
+    const userJson = localStorage.getItem(MVP_USER_KEY);
+    const user = userJson ? JSON.parse(userJson) : null;
+    
+    // Check if user data is incomplete (missing name)
+    if (!user || !user.name) {
+      console.log('[API] User data incomplete, using refresh token to repair...');
+      
+      const result = await refreshToken();
+      
+      if (result) {
+        // Update tokens
+        if (result.accessToken) {
+          localStorage.setItem(MVP_AUTH_TOKEN_KEY, result.accessToken);
+        }
+        if (result.refreshToken) {
+          localStorage.setItem(MVP_REFRESH_TOKEN_KEY, result.refreshToken);
+        }
+        
+        // Update localStorage with complete user data
+        const repairedUser = {
+          id: result.userId,
+          phone: result.phoneNumber,
+          name: result.name,
+        };
+        localStorage.setItem(MVP_USER_KEY, JSON.stringify(repairedUser));
+        
+        // Notify components of the update
+        window.dispatchEvent(new Event('mvp-auth-change'));
+        console.log('[API] User data repaired successfully:', repairedUser.name);
+        return true;
+      }
+    }
+    return false;
+  } catch (error) {
+    // If refresh token is invalid/expired (403), clear it so we don't retry
+    if (error.status === 403 || error.status === 401) {
+      console.log('[API] Refresh token invalid/expired, clearing it. User needs to re-login.');
+      localStorage.removeItem(MVP_REFRESH_TOKEN_KEY);
+    }
+    console.error('[API] Failed to repair user data:', error);
+    return false;
+  }
 }
 
 // ============================================

@@ -155,6 +155,7 @@ export const MVP_ENDPOINTS = {
   REQUEST_OTP: '/v2/mvp/auth/otp/request',
   VERIFY_OTP: '/v2/mvp/auth/otp/verify',
   UPDATE_PROFILE: '/v2/mvp/auth/profile',
+  REFRESH_TOKEN: '/v2/mvp/auth/refresh-token',
   
   // Match endpoints
   MATCHES: '/v2/mvp/matches',
