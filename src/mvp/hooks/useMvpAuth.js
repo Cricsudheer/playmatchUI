@@ -7,7 +7,7 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
-import { MVP_AUTH_TOKEN_KEY, MVP_USER_KEY } from '../constants';
+import { MVP_AUTH_TOKEN_KEY, MVP_REFRESH_TOKEN_KEY, MVP_USER_KEY } from '../constants';
 
 /**
  * Get current MVP auth state from localStorage
@@ -52,10 +52,13 @@ export function useMvpAuth() {
     };
   }, []);
 
-  const login = useCallback((token, user) => {
+  const login = useCallback((token, user, refreshToken = null) => {
     try {
       localStorage.setItem(MVP_AUTH_TOKEN_KEY, token);
       localStorage.setItem(MVP_USER_KEY, JSON.stringify(user));
+      if (refreshToken) {
+        localStorage.setItem(MVP_REFRESH_TOKEN_KEY, refreshToken);
+      }
       setAuthState({ token, user, isAuthenticated: true });
       // Dispatch event for other components
       window.dispatchEvent(new Event('mvp-auth-change'));
@@ -67,6 +70,7 @@ export function useMvpAuth() {
   const logout = useCallback(() => {
     try {
       localStorage.removeItem(MVP_AUTH_TOKEN_KEY);
+      localStorage.removeItem(MVP_REFRESH_TOKEN_KEY);
       localStorage.removeItem(MVP_USER_KEY);
       setAuthState({ token: null, user: null, isAuthenticated: false });
       // Dispatch event for other components

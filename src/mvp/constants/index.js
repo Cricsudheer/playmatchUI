@@ -183,10 +183,12 @@ export const MVP_ENDPOINTS = {
 
 // Storage keys for MVP
 export const MVP_AUTH_TOKEN_KEY = 'gameteam_auth_token';
+export const MVP_REFRESH_TOKEN_KEY = 'gameteam_refresh_token';
 export const MVP_USER_KEY = 'gameteam_user';
 
 export const MVP_STORAGE_KEYS = {
   AUTH_TOKEN: MVP_AUTH_TOKEN_KEY,
+  REFRESH_TOKEN: MVP_REFRESH_TOKEN_KEY,
   USER: MVP_USER_KEY,
   PENDING_ACTION: 'gameteam_pending_action',
   INVITE_DATA: 'gameteam_invite_data',

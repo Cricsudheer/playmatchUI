@@ -47,7 +47,7 @@ export function useOtpAuth() {
 
   /**
    * Verify OTP and check if profile is needed
-   * Returns: { accessToken, refreshToken, userId, phoneNumber, requiresProfile }
+   * Returns: { accessToken, refreshToken, userId, phoneNumber, name, requiresProfile }
    */
   const verifyOtp = useCallback(async (otpCode) => {
     try {
@@ -69,8 +69,9 @@ export function useOtpAuth() {
         const user = {
           id: result.userId,
           phone: result.phoneNumber,
+          name: result.name, // Include name from API response
         };
-        login(result.accessToken, user);
+        login(result.accessToken, user, result.refreshToken);
       }
       
       return result;
@@ -98,7 +99,7 @@ export function useOtpAuth() {
           name,
           area,
         };
-        login(tempAuthData.accessToken, user);
+        login(tempAuthData.accessToken, user, tempAuthData.refreshToken);
       }
       
       // Then update profile on backend
