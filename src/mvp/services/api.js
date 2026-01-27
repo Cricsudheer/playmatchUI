@@ -66,12 +66,45 @@ function getMvpToken() {
 }
 
 /**
- * Handle 401 Unauthorized - clear auth and redirect
+ * Handle 401/403 Unauthorized - attempt refresh, then clear auth if failed
  */
-function handleUnauthorized() {
+async function handleUnauthorized() {
+  // First, try to refresh the token
+  const storedRefreshToken = localStorage.getItem(MVP_REFRESH_TOKEN_KEY);
+  
+  if (storedRefreshToken) {
+    try {
+      const result = await refreshToken();
+      if (result?.accessToken) {
+        // Save new tokens
+        localStorage.setItem(MVP_AUTH_TOKEN_KEY, result.accessToken);
+        if (result.refreshToken) {
+          localStorage.setItem(MVP_REFRESH_TOKEN_KEY, result.refreshToken);
+        }
+        // Update user data if provided
+        if (result.userId) {
+          const repairedUser = {
+            id: result.userId,
+            phone: result.phoneNumber,
+            name: result.name,
+          };
+          localStorage.setItem(MVP_USER_KEY, JSON.stringify(repairedUser));
+        }
+        window.dispatchEvent(new CustomEvent('mvp-auth-change'));
+        // Token refreshed successfully - caller should retry
+        return { refreshed: true, newToken: result.accessToken };
+      }
+    } catch (refreshError) {
+      console.log('[API] Token refresh failed:', refreshError.message);
+    }
+  }
+  
+  // Refresh failed or no refresh token - clear auth
   localStorage.removeItem(MVP_AUTH_TOKEN_KEY);
+  localStorage.removeItem(MVP_REFRESH_TOKEN_KEY);
   localStorage.removeItem(MVP_USER_KEY);
   window.dispatchEvent(new CustomEvent('mvp-auth-change'));
+  return { refreshed: false };
 }
 
 /**
@@ -100,7 +133,7 @@ async function parseErrorResponse(response) {
 /**
  * Base fetch wrapper with auth handling
  */
-async function apiFetch(endpoint, options = {}) {
+async function apiFetch(endpoint, options = {}, isRetry = false) {
   const url = `${API_CONFIG.BASE_URL}${endpoint}`;
   const token = getMvpToken();
   
@@ -120,9 +153,22 @@ async function apiFetch(endpoint, options = {}) {
   });
   
   if (!response.ok) {
-    // Handle 401 Unauthorized
-    if (response.status === 401) {
-      handleUnauthorized();
+    // Handle 401 Unauthorized or 403 Forbidden (token expired/invalid)
+    if ((response.status === 401 || response.status === 403) && !isRetry) {
+      const refreshResult = await handleUnauthorized();
+      
+      // If token was refreshed successfully, retry the request
+      if (refreshResult.refreshed) {
+        return apiFetch(endpoint, options, true);
+      }
+      
+      // If not refreshed, throw appropriate error
+      throw new ApiError(
+        'MVP-AUTH-011',
+        'Session Expired',
+        response.status,
+        'Your session has expired. Please login again.'
+      );
     }
     
     const error = await parseErrorResponse(response);
