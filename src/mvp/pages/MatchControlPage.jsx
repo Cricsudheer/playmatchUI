@@ -9,6 +9,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useMvpAuth } from '../hooks/useMvpAuth';
 import { useMatch, useMatchMutations, useEmergency } from '../hooks/useMatch';
+import { usePageTitle } from '../hooks/usePageTitle';
 import {
   MatchDetailSkeleton,
   ErrorState,
@@ -50,6 +51,8 @@ export function MatchControlPage() {
   const { match, loading, error, refetch, setMatch } = useMatch(matchId);
   const { logBackout, completeMatch, cancelMatch, loading: mutationLoading } = useMatchMutations();
   const { requests, requestSlot, approveRequest, rejectRequest, loading: emergencyLoading } = useEmergency(matchId);
+  
+  usePageTitle(match?.teamName ? `${match.teamName} Match` : 'Match Details');
 
   // Local state
   const [showBackoutModal, setShowBackoutModal] = useState(false);

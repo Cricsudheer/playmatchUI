@@ -8,6 +8,7 @@ import React, { useCallback, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useMatch, usePayments } from '../hooks/useMatch';
+import { usePageTitle } from '../hooks/usePageTitle';
 import {
   PageLoader,
   ErrorState,
@@ -43,6 +44,8 @@ export function PaymentTrackingPage() {
   const navigate = useNavigate();
   const { match, loading: matchLoading, error: matchError } = useMatch(matchId);
   const { paymentData, loading: paymentsLoading, error: paymentsError, refetch, markPayment } = usePayments(matchId);
+  
+  usePageTitle('Payment Tracking');
 
   const [updatingId, setUpdatingId] = useState(null);
   const [filterStatus, setFilterStatus] = useState(null); // null = all, 'PAID', 'UNPAID'

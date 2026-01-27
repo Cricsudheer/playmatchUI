@@ -7,6 +7,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useMvpAuth } from '../hooks/useMvpAuth';
+import { usePageTitle } from '../hooks/usePageTitle';
 import {
   GhostButton,
   PrimaryButton,
@@ -18,6 +19,8 @@ import {
 export function ProfilePage() {
   const navigate = useNavigate();
   const { user, logout } = useMvpAuth();
+  
+  usePageTitle('Profile');
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(user?.name || '');
   const [loading, setLoading] = useState(false);

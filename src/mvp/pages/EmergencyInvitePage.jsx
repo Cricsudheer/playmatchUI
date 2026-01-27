@@ -13,6 +13,7 @@ import { toast } from 'sonner';
 import { useMatchByEmergencyToken, useEmergency } from '../hooks/useMatch';
 import { useAuthAction, usePendingAction } from '../hooks/useOtpAuth';
 import { useMvpAuth } from '../hooks/useMvpAuth';
+import { usePageTitle } from '../hooks/usePageTitle';
 import {
   InvitePageSkeleton,
   ErrorState,
@@ -38,6 +39,8 @@ export function EmergencyInvitePage() {
   const { requestSlot, loading: requesting } = useEmergency(match?.matchId);
   const { showOtpModal, setShowOtpModal } = useAuthAction();
   const { savePendingAction, getPendingAction, clearPendingAction } = usePendingAction();
+  
+  usePageTitle(match?.teamName ? `Emergency - ${match.teamName}` : 'Emergency Invite');
 
   const [requested, setRequested] = useState(false);
   const [requestData, setRequestData] = useState(null);

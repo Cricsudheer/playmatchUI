@@ -25,6 +25,7 @@ import { toast } from 'sonner';
 import { useMatchByToken, useMatchMutations } from '../hooks/useMatch';
 import { useAuthAction, usePendingAction } from '../hooks/useOtpAuth';
 import { useMvpAuth } from '../hooks/useMvpAuth';
+import { usePageTitle } from '../hooks/usePageTitle';
 import {
   InvitePageSkeleton,
   ErrorState,
@@ -80,6 +81,8 @@ export function TeamInvitePage() {
   const { respondToMatch, loading: responding } = useMatchMutations();
   const { showOtpModal, setShowOtpModal } = useAuthAction();
   const { savePendingAction, getPendingAction, clearPendingAction } = usePendingAction();
+  
+  usePageTitle(match?.teamName ? `Join ${match.teamName}` : 'Match Invite');
 
   const [responded, setResponded] = useState(false);
   const [userResponse, setUserResponse] = useState(null);

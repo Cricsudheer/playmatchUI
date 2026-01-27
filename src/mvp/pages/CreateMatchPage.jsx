@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 import { useMvpAuth } from '../hooks/useMvpAuth';
 import { useMatchMutations } from '../hooks/useMatch';
 import { useAuthAction } from '../hooks/useOtpAuth';
+import { usePageTitle } from '../hooks/usePageTitle';
 import {
   Input,
   Select,
@@ -35,6 +36,8 @@ export function CreateMatchPage() {
   const { isAuthenticated } = useMvpAuth();
   const { createMatch, loading } = useMatchMutations();
   const { showOtpModal, setShowOtpModal, executeWithAuth } = useAuthAction();
+  
+  usePageTitle('Create Match');
 
   // Share modal state
   const [showShareModal, setShowShareModal] = useState(false);

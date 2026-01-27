@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useMyMatches } from '../hooks/useMatch';
 import { useMvpAuth } from '../hooks/useMvpAuth';
+import { usePageTitle } from '../hooks/usePageTitle';
 import {
   PrimaryButton,
   GhostButton,
@@ -38,6 +39,8 @@ export function HomePage() {
   const navigate = useNavigate();
   const { user, isAuthenticated, logout } = useMvpAuth();
   const { matches, stats, loading, error, refetch } = useMyMatches();
+  
+  usePageTitle(isAuthenticated ? 'My Matches' : null);
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 

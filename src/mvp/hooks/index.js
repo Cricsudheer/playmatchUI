@@ -3,3 +3,4 @@ export { useMyMatches, useMatch, useMatchByToken, useMatchByEmergencyToken, useM
 export { useOtpAuth, usePendingAction, useAuthAction } from './useOtpAuth';
 export { useCountdown, useMultipleCountdowns } from './useCountdown';
 export { useMvpAuth } from './useMvpAuth';
+export { usePageTitle } from './usePageTitle';

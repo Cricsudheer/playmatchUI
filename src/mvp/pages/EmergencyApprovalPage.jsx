@@ -7,6 +7,7 @@ import React, { useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useEmergency, useMatch } from '../hooks/useMatch';
+import { usePageTitle } from '../hooks/usePageTitle';
 import {
   PageLoader,
   ErrorState,
@@ -31,6 +32,8 @@ export function EmergencyApprovalPage() {
     approveRequest,
     rejectRequest,
   } = useEmergency(matchId);
+  
+  usePageTitle('Emergency Requests');
 
   const handleApprove = useCallback(async (requestId) => {
     try {
