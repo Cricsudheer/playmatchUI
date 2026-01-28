@@ -1,37 +1,50 @@
-# SIGMA Cricket Team Dashboard
+# GameTeam MVP
 
-A modern React application for displaying cricket team statistics and player performance metrics with real-time data synchronization.
+A mobile-first React application for cricket match organization - the "Match Survival OS" for cricket captains. Create matches, share invite links, track player responses, and manage payments all in one place.
 
 ## Features
 
-- **Team Overview**: Combined view of batting, bowling, and fielding stats
-- **Batting Analysis**: Detailed batting statistics with filtering and sorting options
-- **Bowling Analysis**: Wicket-taking ability and economy rate metrics
-- **Fielding Stats**: Dismissal tracking and fielder performance
-- **Auto-Generated Insights**: AI-derived recommendations for team selection
-- **Responsive Design**: Works seamlessly on desktop and mobile devices
-- **Dark Theme**: Modern, eye-friendly interface with gradient accents
+- **OTP Authentication**: Phone-based login with no passwords to remember
+- **Match Creation**: Create matches with venue, time, fees, and player limits
+- **Invite Links**: Shareable links for team invites and emergency slots
+- **Player Management**: Track confirmed players, backups, and backouts
+- **Emergency Slots**: 60-minute lock system for last-minute player additions
+- **Payment Tracking**: Mark and track player payments with UPI/Cash options
+- **Real-time Status**: Match health indicators (Safe/Risk/Critical)
+- **Mobile-First Design**: Touch-friendly UI optimized for on-the-go use
+
+## Tech Stack
+
+- **Framework**: React 18
+- **Build Tool**: Vite 6
+- **Styling**: Tailwind CSS 4
+- **Forms**: react-hook-form + zod
+- **Routing**: react-router-dom 6
+- **Notifications**: sonner
+- **Date Handling**: date-fns
 
 ## Project Structure
 
 ```
 src/
-├── components/        # Reusable UI components
-├── hooks/            # Custom React hooks
-├── services/         # API calls and data fetching
-├── utils/            # Utility functions and helpers
-├── constants/        # Application constants and config
-├── styles/           # Global CSS styles
-├── App.jsx           # Main application component
+├── App.jsx           # Main app with routes
 ├── main.jsx          # React entry point
-└── index.css         # Global styles
+├── index.css         # Global styles
+└── mvp/
+    ├── components/   # Reusable UI components
+    ├── constants/    # App constants & API endpoints
+    ├── hooks/        # Custom React hooks
+    ├── pages/        # Page components
+    ├── services/     # API service
+    ├── styles/       # MVP-specific CSS
+    └── utils/        # Utility functions
 ```
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js 16+ and npm/pnpm
+- Node.js 18+ and npm
 - Git
 
 ### Installation
@@ -39,7 +52,7 @@ src/
 1. Clone the repository:
 ```bash
 git clone <repository-url>
-cd sigma_dashboard_react
+cd playMatchUI
 ```
 
 2. Install dependencies:
@@ -47,12 +60,9 @@ cd sigma_dashboard_react
 npm install
 ```
 
-3. Create environment files:
+3. Set environment variables (optional):
 ```bash
-# .env (production)
-VITE_API_BASE_URL=https://playmatch-preprod.onrender.com
-
-# .env.local (development)
+# .env.local
 VITE_API_BASE_URL=http://localhost:8080
 ```
 
@@ -63,118 +73,57 @@ Start the development server:
 npm run dev
 ```
 
-The application will be available at `http://localhost:5173`
+The app will be available at `http://localhost:5173`
 
 ### Building
 
-Create an optimized production build:
+Create production build:
 ```bash
 npm run build
 ```
 
-### Linting & Formatting
-
-Check code quality:
+Preview production build:
 ```bash
-npm run lint
+npm run preview
 ```
-
-Fix linting issues:
-```bash
-npm run lint:fix
-```
-
-Format code:
-```bash
-npm run format
-```
-
-## Architecture & Best Practices
-
-### Component Organization
-- Small, focused components with single responsibility
-- Proper prop drilling with context when needed
-- Functional components with React Hooks
-
-### State Management
-- Local component state for UI state
-- Custom hooks for shared logic
-- `useMemo` for expensive calculations
-
-### Separation of Concerns
-- **Components**: UI rendering only
-- **Hooks**: State and side effects logic
-- **Services**: API calls and backend communication
-- **Utils**: Pure functions and helpers
-- **Constants**: Centralized config values
 
 ### Code Quality
-- ESLint configuration for code consistency
-- Prettier for code formatting
-- TypeScript support ready (optional)
 
-## API Integration
+```bash
+# Lint code
+npm run lint
 
-The application fetches cricket statistics from the SIGMA backend API:
+# Fix lint issues
+npm run lint:fix
 
-```
-GET /sigma/api/players/all/stats
-```
+# Format code
+npm run format
 
-### Response Format
-
-```json
-[
-  {
-    "playerId": "string",
-    "playerName": "string",
-    "battingStats": {
-      "innings": number,
-      "runsScored": number,
-      "averageScore": number
-    },
-    "bowlingStats": {
-      "innings": number,
-      "wicketsTaken": number,
-      "economyRate": number
-    },
-    "dismissalStats": {
-      "innings": number,
-      "dismissals": number
-    }
-  }
-]
+# Type check
+npm run type-check
 ```
 
-## Technologies Used
+## Routes
 
-- **React 18.3+**: UI library
-- **Vite**: Build tool and dev server
-- **CSS3**: Styling with CSS variables
-- **ESLint**: Code quality
-- **Prettier**: Code formatting
+| Route | Description |
+|-------|-------------|
+| `/home` | Landing page / Dashboard |
+| `/m/:token` | Team invite link |
+| `/e/:token` | Emergency invite link |
+| `/matches/new` | Create new match |
+| `/matches/:id` | Match control dashboard |
+| `/matches/:id/payments` | Payment tracking |
+| `/matches/:id/emergency` | Emergency approvals |
+| `/profile` | User profile |
 
-## Performance Optimizations
+## API Documentation
 
-- Memoized calculations using `useMemo`
-- Lazy table scrolling (max-height constraint)
-- Efficient re-rendering with proper dependency arrays
-- CSS transitions for smooth animations
+See [FRONTEND.md](./FRONTEND.md) for complete API specification.
 
-## Browser Support
+## Architecture
 
-- Chrome/Edge (latest)
-- Firefox (latest)
-- Safari 14+
-- Mobile browsers
-
-## Contributing
-
-1. Follow the existing code structure
-2. Use meaningful commit messages
-3. Run `npm run lint:fix` before committing
-4. Update documentation for new features
+See [ARCHITECTURE.md](./ARCHITECTURE.md) for detailed architecture documentation.
 
 ## License
 
-Proprietary - SIGMA Cricket Team
+Private - All rights reserved.

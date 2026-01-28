@@ -6,8 +6,7 @@
  * Response format: { code, title, status, detail }
  */
 
-import { API_CONFIG } from '../../constants/config';
-import { MVP_ENDPOINTS, MVP_AUTH_TOKEN_KEY, MVP_REFRESH_TOKEN_KEY, MVP_USER_KEY } from '../constants';
+import { API_CONFIG, MVP_ENDPOINTS, MVP_AUTH_TOKEN_KEY, MVP_REFRESH_TOKEN_KEY, MVP_USER_KEY } from '../constants';
 
 /**
  * Custom API Error class for RFC 7807 Problem Details
