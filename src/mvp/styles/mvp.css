@@ -1106,26 +1106,50 @@
 .mvp-modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 16px;
   z-index: 1000;
+  animation: mvp-fade-in 0.15s ease;
+}
+
+@keyframes mvp-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .mvp-modal {
-  background: var(--card-bg);
+  background: var(--bg-elevated);
   border: 1px solid var(--border-subtle);
-  border-radius: 16px;
+  border-radius: var(--radius-xl);
   width: 100%;
   max-width: 400px;
   max-height: 90vh;
   overflow-y: auto;
+  position: relative;
+  animation: mvp-modal-in 0.2s ease;
+}
+
+@keyframes mvp-modal-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 .mvp-modal--small {
-  max-width: 340px;
+  max-width: 380px;
+}
+
+.mvp-modal--headerless {
+  /* Extra top padding for floating close button */
 }
 
 .mvp-modal-header {
@@ -1146,18 +1170,38 @@
 .mvp-modal-close {
   background: none;
   border: none;
-  color: var(--text-muted);
+  color: var(--text-tertiary);
   cursor: pointer;
   font-size: 1.25rem;
   padding: 4px;
+  border-radius: var(--radius-sm);
+  transition: color var(--transition-fast), background var(--transition-fast);
 }
 
 .mvp-modal-close:hover {
   color: var(--text-primary);
+  background: rgba(148, 163, 184, 0.1);
+}
+
+.mvp-modal-close--floating {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  z-index: 1;
 }
 
 .mvp-modal-content {
   padding: 20px;
+}
+
+.mvp-modal-content--headerless {
+  padding: var(--space-5);
 }
 
 .mvp-modal-message {
@@ -1229,92 +1273,410 @@
 }
 
 /* ================================================
-   OTP Auth
+   OTP Auth - Modern SaaS Design (Stripe/Linear inspired)
    ================================================ */
-.mvp-otp-error {
-  padding: 10px 14px;
-  background: var(--mvp-critical-bg);
-  border: 1px solid var(--mvp-critical);
-  border-radius: 8px;
-  color: var(--mvp-critical);
-  font-size: 0.85rem;
-  margin-bottom: 16px;
+
+/* Container */
+.otp-auth-container {
+  padding: var(--space-2) 0;
 }
 
-.mvp-otp-info {
+/* Header */
+.otp-auth-header {
   text-align: center;
-  margin-bottom: 16px;
+  margin-bottom: var(--space-5);
 }
 
-.mvp-otp-info p {
-  color: var(--text-muted);
+.otp-auth-title {
+  font-size: var(--text-xl);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 var(--space-2) 0;
+  letter-spacing: -0.02em;
+}
+
+.otp-auth-subtitle {
+  font-size: var(--text-base);
+  color: var(--text-secondary);
   margin: 0;
+  line-height: 1.5;
 }
 
-.mvp-otp-welcome {
-  color: var(--accent) !important;
+.otp-auth-subtitle strong {
+  color: var(--text-primary);
   font-weight: 500;
-  margin-top: 8px !important;
 }
 
-.mvp-otp-actions {
+/* Step Indicator */
+.otp-steps {
   display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  margin-top: 16px;
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+  margin-bottom: var(--space-5);
 }
 
-.mvp-otp-actions-stacked {
+.otp-step {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-top: 16px;
+  align-items: center;
 }
 
-.mvp-otp-resend {
-  text-align: center;
-  margin-top: 16px;
-}
-
-.mvp-otp-footer {
-  margin-top: 20px;
-  padding-top: 16px;
-  border-top: 1px solid var(--border-subtle);
-}
-
-.mvp-otp-terms {
-  font-size: 0.75rem;
-  color: var(--text-soft);
-  text-align: center;
-  margin: 0;
-}
-
-.mvp-otp-page {
+.otp-step-dot {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 11px;
+  font-weight: 500;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  color: var(--text-tertiary);
+  transition: all var(--transition-base);
 }
 
-.mvp-otp-container {
-  width: 100%;
-  max-width: 360px;
-  padding: 24px;
+.otp-step--active .otp-step-dot {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: white;
 }
 
-.mvp-otp-title {
-  font-size: 1.5rem;
-  font-weight: 600;
+.otp-step--completed .otp-step-dot {
+  background: var(--status-safe);
+  border-color: var(--status-safe);
+  color: white;
+}
+
+.otp-step-line {
+  width: 32px;
+  height: 1px;
+  background: var(--border-default);
+  margin: 0 var(--space-2);
+  transition: background var(--transition-base);
+}
+
+.otp-step--completed + .otp-step .otp-step-line,
+.otp-step--completed .otp-step-line {
+  background: var(--status-safe);
+}
+
+/* Form */
+.otp-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* Field Label */
+.otp-field-label {
+  display: block;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-2);
+}
+
+/* Phone Input */
+.otp-phone-field {
+  margin-bottom: var(--space-1);
+}
+
+.otp-phone-input-container {
+  display: flex;
+  align-items: stretch;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  transition: border-color var(--transition-base), box-shadow var(--transition-base);
+  overflow: hidden;
+}
+
+.otp-phone-input-container:focus-within {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.otp-phone-prefix {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0 var(--space-3);
+  background: rgba(148, 163, 184, 0.05);
+  border-right: 1px solid var(--border-default);
+  color: var(--text-secondary);
+  font-size: var(--text-base);
+  font-weight: 500;
+}
+
+.otp-phone-flag {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.otp-phone-code {
+  font-family: inherit;
+}
+
+.otp-phone-input {
+  flex: 1;
+  padding: 14px var(--space-3);
+  background: transparent;
+  border: none;
   color: var(--text-primary);
-  text-align: center;
-  margin: 0 0 24px 0;
+  font-size: var(--text-lg);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  outline: none;
 }
 
-.mvp-otp-links {
+.otp-phone-input::placeholder {
+  color: var(--text-tertiary);
+  font-weight: 400;
+}
+
+/* OTP Digit Input */
+.otp-code-field {
+  margin-bottom: var(--space-1);
+}
+
+.otp-digit-container {
   display: flex;
   justify-content: center;
-  gap: 16px;
-  margin-top: 16px;
+  gap: var(--space-2);
 }
+
+.otp-digit-input {
+  width: 44px;
+  height: 52px;
+  text-align: center;
+  font-size: var(--text-xl);
+  font-weight: 600;
+  color: var(--text-primary);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  outline: none;
+  transition: all var(--transition-base);
+  caret-color: var(--accent-primary);
+}
+
+.otp-digit-input:focus {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.otp-digit-input:not(:placeholder-shown) {
+  border-color: var(--border-focus);
+}
+
+/* Dev Hint */
+.otp-dev-hint {
+  text-align: center;
+  font-size: var(--text-sm);
+  color: var(--text-tertiary);
+  padding: var(--space-2) var(--space-3);
+  background: rgba(148, 163, 184, 0.05);
+  border-radius: var(--radius-md);
+}
+
+.otp-dev-hint code {
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  background: rgba(148, 163, 184, 0.1);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+}
+
+/* Form Actions */
+.otp-form-actions {
+  margin-top: var(--space-2);
+}
+
+/* Secondary Actions */
+.otp-secondary-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-3);
+  padding-top: var(--space-2);
+}
+
+.otp-link-button {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  cursor: pointer;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  transition: color var(--transition-fast), background var(--transition-fast);
+}
+
+.otp-link-button:hover {
+  color: var(--text-primary);
+  background: rgba(148, 163, 184, 0.08);
+}
+
+.otp-link-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.otp-action-divider {
+  color: var(--text-tertiary);
+  font-size: var(--text-sm);
+}
+
+/* Error Message */
+.otp-error-message {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: var(--radius-lg);
+  color: #f87171;
+  font-size: var(--text-sm);
+  margin-bottom: var(--space-4);
+}
+
+.otp-error-message svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* Profile Fields */
+.otp-profile-fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.otp-text-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.otp-text-input {
+  padding: 14px var(--space-3);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  color: var(--text-primary);
+  font-size: var(--text-base);
+  outline: none;
+  transition: border-color var(--transition-base), box-shadow var(--transition-base);
+}
+
+.otp-text-input:focus {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.otp-text-input::placeholder {
+  color: var(--text-tertiary);
+}
+
+/* Footer */
+.otp-auth-footer {
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border-subtle);
+  text-align: center;
+}
+
+.otp-auth-footer p {
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.otp-footer-link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.otp-footer-link:hover {
+  color: var(--text-primary);
+}
+
+/* ================================================
+   OTP Page (Full Screen)
+   ================================================ */
+.otp-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-5);
+  background: var(--bg-base);
+}
+
+.otp-page-container {
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Brand */
+.otp-page-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+.otp-page-logo {
+  color: var(--accent-primary);
+}
+
+.otp-page-brand-name {
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+/* Card */
+.otp-page-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+}
+
+.otp-page-title {
+  font-size: var(--text-xl);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 var(--space-2) 0;
+  text-align: center;
+  letter-spacing: -0.02em;
+}
+
+/* Page Footer */
+.otp-page-footer {
+  margin-top: var(--space-5);
+  text-align: center;
+}
+
+.otp-page-footer p {
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ================================================
+   Legacy OTP Styles (keeping for backward compat)
+   Will be deprecated
+   ================================================ */
 
 /* ================================================
    Player List

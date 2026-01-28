@@ -1,6 +1,8 @@
 /**
  * Modal component for MVP
  * Used for OTP auth, backout reasons, confirmations
+ * 
+ * Updated: Supports headerless mode for OTP flow
  */
 
 import React, { useEffect, useRef } from 'react';
@@ -47,15 +49,32 @@ export function Modal({
 
   if (!isOpen) return null;
 
+  // Headerless mode: just show close button floating
+  const showFloatingClose = !title && showClose;
+
   return (
     <div className="mvp-modal-backdrop" onClick={handleBackdropClick}>
       <div
         ref={modalRef}
-        className={`mvp-modal mvp-modal--${size}`}
+        className={`mvp-modal mvp-modal--${size} ${!title ? 'mvp-modal--headerless' : ''}`}
         role="dialog"
         aria-modal="true"
-        aria-labelledby="modal-title"
+        aria-labelledby={title ? "modal-title" : undefined}
       >
+        {/* Floating close button for headerless mode */}
+        {showFloatingClose && (
+          <button
+            type="button"
+            className="mvp-modal-close mvp-modal-close--floating"
+            onClick={onClose}
+            aria-label="Close"
+          >
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M15 5L5 15M5 5l10 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+            </svg>
+          </button>
+        )}
+        
         {title && (
           <div className="mvp-modal-header">
             <h2 id="modal-title" className="mvp-modal-title">{title}</h2>
@@ -71,7 +90,7 @@ export function Modal({
             )}
           </div>
         )}
-        <div className="mvp-modal-content">
+        <div className={`mvp-modal-content ${!title ? 'mvp-modal-content--headerless' : ''}`}>
           {children}
         </div>
       </div>
